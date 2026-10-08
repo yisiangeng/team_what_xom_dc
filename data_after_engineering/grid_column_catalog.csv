@@ -1,0 +1,30 @@
+short,raw_header,group,max_abs_diff_over_cases,varies_by_case
+i,I Index,grid,0.0,False
+j,J Index,grid,0.0,False
+k,K Index,grid,0.0,False
+x,X Coordinate,grid,0.0,False
+y,Y Coordinate,grid,0.0,False
+z,Z Coordinate,grid,0.0,False
+porv,Pore Volume (PORV),static,7005537.75,True
+poro,Porosity (PORO),static,0.075756,True
+permx,Permeability I (PERMX),static,5.1001,True
+permy,Permeability J (PERMY),static,5.1001,True
+permz,Permeability K (PERMZ),static,0.0,False
+ntg,Net-to-Gross Ratio (NTG),static,0.0,False
+tranx,Transmissibility I (TRANX),static,0.508518,True
+trany,Transmissibility J (TRANY),static,0.227017,True
+tranz,Transmissibility K (TRANZ),static,0.0,False
+fipnum,Fluid In Place Region (FIPNUM),static,0.0,False
+pvtnum,PVT Region (PVTNUM),static,0.0,False
+swl,Connate Water Saturation (SWL),static,0.0,False
+swcr,Critical Water Saturation (SWCR),static,0.0,False
+swu,Maximum Water Saturation (SWU),static,0.0,False
+sgl, Connateg  Gas Saturation (SGL),static,0.0,False
+sgcr,Critical Gas Saturation (SGCR),static,0.0,False
+sowcr,Residual Oil to Water (SOWCR),static,0.0,False
+pressure,Pressure (PRESSURE),dynamic,0.0,False
+swat,Water Saturation (SWAT),dynamic,0.0,False
+soil,Oil Saturation (SOIL),dynamic,0.0,False
+sgas,Gas Saturation (SGAS),dynamic,0.0,False
+rs,Solution Gas-Oil Ratio (RS),dynamic,0.0,False
+rv,Vapor Oil-Gas Ratio (RV),dynamic,0.0,False

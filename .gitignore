@@ -1,0 +1,3 @@
+# Organiser's original dataset (confidential, DWC26 only): ignore the files, keep the folder
+dataset_ori/*
+!dataset_ori/.gitkeep

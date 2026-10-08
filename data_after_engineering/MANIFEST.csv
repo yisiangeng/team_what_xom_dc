@@ -1,0 +1,14 @@
+file,size,content
+cases.csv,0.02 MB,"100 rows. case_id, split, cv_fold, the 4 parameters and scaled copies (*_s)"
+param_bounds.csv,0.00 MB,min and max of each parameter in the train cases (used for scaling)
+history_observed.csv,0.01 MB,"41 rows. Observed field history: cumulative, reported rate, average rate, water injection"
+curves_native.csv,2.07 MB,"all simulator time steps of all cases (long format, about 17k rows)"
+curves_quarterly.csv,0.61 MB,"100 cases x 41 quarterly dates, same dates as the history (4,100 rows)"
+curves_quarterly_cum.npz,0.10 MB,"arrays: Y (100, 41, 3) cumulative gas/oil/water, y_hist (41, 3), case_ids, dates, t_days"
+forecast_dates.csv,0.00 MB,the 80 quarterly forecast dates of the template (2008-04-01 to 2028-01-01)
+grid_column_catalog.csv,0.00 MB,"the 29 grid columns: short name, raw header, group, whether it changes between cases"
+grid_case_checks.csv,0.00 MB,per case: active-cell count and mask check against case 1
+grid_cells_template.csv,10.72 MB,"90,365 cells: unchanged columns once (NaN for missing), plus the active flag"
+grid_varying_cells.npy,102.03 MB,"float32 array (100 cases, 42,512 active cells, 6 columns: porv, poro, permx, permy, tranx, trany)"
+grid_active_cell_ids.npy,0.34 MB,"row numbers (cell_id) of the 42,512 active cells in the template"
+grid_case_features.csv,0.01 MB,"per case: total pore volume, mean porosity, mean permeability, ..."
