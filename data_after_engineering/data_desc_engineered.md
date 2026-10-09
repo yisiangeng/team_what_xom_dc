@@ -29,6 +29,8 @@ You can do the whole project with five files.
 | Optional | `grid_case_features.csv`, `grid_cells_template.csv`, `grid_varying_cells.npy`, `grid_active_cell_ids.npy` | Only to test whether the grid adds anything. The 4 parameters already carry the same information. |
 | Reference | `grid_column_catalog.csv`, `grid_case_checks.csv`, `MANIFEST.csv`, `cache/` | Documentation and checks. Do not model on them. |
 
+> **Remark on `grid_cells_template.csv`:** this file is probably not useful for a standard model. It describes the parts of the grid that are the same in all 100 cases (cell positions, starting pressure, saturation limits and so on). A model that predicts the production curves from the 4 parameters gets no new information from it, because it never changes from case to case. It only becomes useful if the team decides to build a spatial model (for example a CNN or another model that reads the grid as a 3D map). In that case, use it together with `grid_varying_cells.npy`. Otherwise, you can ignore it.
+
 Where to start:
 
 | You are the | Start with |
@@ -81,6 +83,61 @@ Where to start:
 | `grid_column_catalog.csv` | `03`-`08` raw sheets | 29 rows | Name and role of each raw grid column |
 | `grid_case_checks.csv` | `03`-`08` raw sheets | 100 rows | Active-cell check per case |
 
+### What "active cell" means
+
+We define a cell as active when its pore volume (`porv`) is greater than 0. The rule is in `solution/grid_loader.py:61`:
+
+```python
+active = arr[:, names.index("porv")] > 0
+```
+
+How the rule works:
+
+```
+ grid sheet (90,365 rows)
+        |
+        v
+  porv > 0 ?
+     /      \
+   yes       no
+    |         |
+ active    inactive
+ (42,512)  (47,853)
+```
+*Caption: one test per cell. The pore volume column decides everything.*
+
+Why pore volume:
+
+- Pore volume is the space in the rock that can hold fluid. Zero pore volume means the cell holds no fluid, so the simulator has nothing to compute there.
+- The data supports this choice. Inactive cells have empty values in other columns, such as `permz` and `tranz`. The count of empty cells (47,853) matches the inactive count.
+- The data files have no `ACTNUM` column. `ACTNUM` is the flag that simulators normally use for active cells. So we infer the status from `porv`.
+
+### How the grid files split into "template" and "varying"
+
+```
+  100 grid sheets (cases 1-100), 29 columns each
+        |
+        |  compare every column across all 100 cases
+        v
+  +-------------------------+     +-----------------------------+
+  | 23 columns: identical   |     |  6 columns: differ by case  |
+  | in every case           |     |  porv, poro, permx, permy,  |
+  | (max difference = 0)    |     |  tranx, trany               |
+  +-------------------------+     +-----------------------------+
+        |                                    |
+        v                                    v
+ grid_cells_template.csv            grid_varying_cells.npy
+ (read from case 1 only,            (kept for each case)
+  25 cols incl. cell_id, active)
+```
+*Caption: the template holds the part of the grid that never changes from case to case.*
+
+Details:
+
+- The data comes from the sheet of case 1 (`03 Train Cases 1-4.xlsx`). Because the values are identical in all 100 cases, any case would give the same result.
+- Nothing is averaged or combined. A check on all 100 cases confirmed a maximum difference of 0 for these columns.
+- The 25 columns in the CSV are 23 grid columns plus `cell_id` and `active`. I added those two when building the file.
+
 ## 3. What the `.npz` and `.npy` files contain
 
 NumPy files hold arrays. They are smaller and faster than CSV, and they keep full precision.
@@ -92,6 +149,78 @@ NumPy files hold arrays. They are smaller and faster than CSV, and they keep ful
 | `grid_active_cell_ids.npy` | The row numbers of the 42,512 active cells in `grid_cells_template.csv` | Links the array above to the template |
 
 Case index in every array = `case_id` - 1. Load the `.npz` with `np.load(path, allow_pickle=False)`.
+
+### How to open and view the `.npz` file
+
+`curves_quarterly_cum.npz` is a bundle of several arrays. The code below lists them, then shows them as tables with column names. Change `case_id` to look at another case.
+
+```python
+import numpy as np, pandas as pd
+OUT = "./"                                   # the folder that holds these files
+
+z = np.load(OUT + "curves_quarterly_cum.npz", allow_pickle=False)
+print(z.files)                               # ['Y', 'y_hist', 'case_ids', 'dates', 't_days', 'quantities']
+print(z["Y"].shape, z["y_hist"].shape)       # (100, 41, 3) (41, 3)
+
+cols  = [str(q) for q in z["quantities"]]    # ['gas_cum', 'oil_cum', 'water_cum']
+dates = z["dates"]                           # the 41 quarter dates
+
+# One case: 41 rows x 3 columns
+case_id = 1
+df_case = pd.DataFrame(z["Y"][case_id - 1], columns=cols, index=pd.Index(dates, name="date"))
+print(df_case.head())
+
+# The observed history: 41 rows x 3 columns
+df_hist = pd.DataFrame(z["y_hist"], columns=cols, index=pd.Index(dates, name="date"))
+print(df_hist.head())
+
+# All 100 cases in one long table: 4,100 rows (100 x 41)
+df_all = pd.DataFrame(z["Y"].reshape(-1, 3), columns=cols)
+df_all.insert(0, "date", np.tile(dates, len(z["case_ids"])))
+df_all.insert(0, "case_id", np.repeat(z["case_ids"], len(dates)))
+print(df_all.head())
+```
+
+Save as CSV if you want (the 4,100-row table is the same content as `curves_quarterly.csv`, without the rates):
+
+```python
+df_case.to_csv("npz_case1.csv")              # one case, keeps the date as the first column
+df_hist.to_csv("npz_history.csv")
+df_all.to_csv("npz_all_cases.csv", index=False)
+```
+
+### How to open and view the `.npy` files
+
+`grid_varying_cells.npy` holds one array of shape 100 x 42,512 x 6 (float32). The six column names are not stored in the file, so you must add them. `grid_active_cell_ids.npy` holds the row numbers (`cell_id`) of the 42,512 active cells, so it can label the rows.
+
+```python
+import numpy as np, pandas as pd
+OUT = "./"
+
+A   = np.load(OUT + "grid_varying_cells.npy", mmap_mode="r")   # mmap: reads from disk only what you use
+ids = np.load(OUT + "grid_active_cell_ids.npy")                # (42512,)
+names = ["porv", "poro", "permx", "permy", "tranx", "trany"]   # axis 2, in this order
+print(A.shape)                                                 # (100, 42512, 6)
+
+# One case: 42,512 rows (active cells) x 6 columns, labelled by cell_id
+case_id = 1
+df_grid = pd.DataFrame(A[case_id - 1], columns=names)
+df_grid.insert(0, "cell_id", ids)
+print(df_grid.head())
+```
+
+Save as CSV if you want. One case is about 42,000 rows. All 100 cases stacked would be about 4.25 million rows (a large file), so save one case at a time:
+
+```python
+df_grid.to_csv("npy_case1_grid.csv", index=False)
+```
+
+To join with the template (coordinates `i`, `j`, `k`, `x`, `y`, `z` and so on), merge on `cell_id`:
+
+```python
+tmpl = pd.read_csv(OUT + "grid_cells_template.csv")
+df_full = df_grid.merge(tmpl, on="cell_id")
+```
 
 ## 4. What the variables mean
 
@@ -170,6 +299,8 @@ The grid is a 3D box of 53 x 55 x 31 cells. Only 42,512 cells (47%) are active. 
 | `rs`, `rv` | Gas dissolved in oil (0.3633); oil in gas (0) |
 
 Cells that are not active have empty values.
+
+Note: this file is mainly useful for spatial models, because it gives the position and the fixed properties of each cell. For a model that uses only the 4 parameters, you can skip it (see the remark in section 1).
 
 ### `grid_varying_cells.npy` (the part of the grid that changes)
 
