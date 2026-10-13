@@ -1,0 +1,47 @@
+{
+  "objective": "sqrt(mean over 3 phases x 41 dates of ((C_hat - C_obs) / C_obs_final)^2)",
+  "model": {
+    "path": "C:\\Users\\lingd\\Desktop\\dwc26\\cod\\proxy_outputs\\cumulative_model.pt",
+    "sha256": "abc99012d5f9ae0feb684f80328074e9065180090217b25a6a111b2a7d66ebe9"
+  },
+  "bounds": {
+    "source": "min/max of the 100 provided cases, widened by the margin",
+    "margin_fraction": 0.05,
+    "lo": {
+      "fault_trans": 0.04511720124922436,
+      "poro_mult": 0.766578722495193,
+      "perm_mult": 0.05732576474298379,
+      "aquifer_pv": 46.65879543443093
+    },
+    "hi": {
+      "fault_trans": 0.15494241157261873,
+      "poro_mult": 1.5286673075553678,
+      "perm_mult": 10.247747428815572,
+      "aquifer_pv": 207.12931455427756
+    }
+  },
+  "search": {
+    "sampler": "scipy.stats.qmc.Sobol (scrambled)",
+    "n_global": 40000,
+    "n_local": 5000,
+    "local_centers": 20,
+    "local_span_fraction": 0.02,
+    "seed": 0
+  },
+  "result": {
+    "best_misfit": 0.0038456353962255754,
+    "best_theta": {
+      "fault_trans": 0.08400635830417255,
+      "poro_mult": 1.3689501286797918,
+      "perm_mult": 3.9830794791859265,
+      "aquifer_pv": 207.12931455427756
+    },
+    "best_provided_case": {
+      "case_id": 6,
+      "misfit": 0.003995177573842239
+    },
+    "provided_misfit_median": 0.05371136742770248,
+    "improvement_vs_best_case": 1.0388862079237768
+  },
+  "runtime_seconds": 2.2
+}
