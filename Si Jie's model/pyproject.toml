@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dwc26"
+version = "0.1.0"
+description = "DWC26: simulator proxy, MCMC history matching and rate forecast"
+readme = "README.md"
+requires-python = ">=3.13,<3.14"
+# Exact pins (V7). Task 1 does not import torch, scikit-learn or matplotlib.
+dependencies = [
+    "numpy==2.3.5",
+    "pandas==2.3.3",
+    "openpyxl==3.1.5",
+    "scipy==1.17.1",
+    "pyyaml==6.0.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==9.1.1",
+]
+# Proxies (Task 2 on). CPU build from the official PyTorch index:
+#   --extra-index-url https://download.pytorch.org/whl/cpu
+models = [
+    "torch==2.14.1+cpu",
+    "scikit-learn==1.7.2",
+]
+# Task 3 figures (D-030). Agg backend only; imported lazily by dwc26.evaluation.plots.
+eval = [
+    "matplotlib==3.10.8",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "rawdata: needs the raw files 01 and 02 in data/raw/ (skipped when they are missing)",
+    "slow: long-running tests (spec task2 section 4.3); run with: pytest -m slow",
+]
+# The default run skips the slow tests (spec task2 section 3.5).
+addopts = "-m 'not slow'"

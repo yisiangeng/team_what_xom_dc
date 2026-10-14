@@ -1,0 +1,39 @@
+# Task 2 DMD proxy (spec docs/specs/task2.md sections 1.2, 2.9, 2.9a and 3; amendment A2). All keys are required.
+model: dmd
+seed: 0                          # GP optimiser restarts (random_state)
+paths: {db: data/processed/dwc26.sqlite, models: outputs/models, logs: outputs/logs}
+data: {t_cut: null}
+objective: {fluids: [oil, water]}
+fluid_weight_sets:
+  d012: [0.25, 0.25, 0.5]
+  equal: [0.3333333333333333, 0.3333333333333333, 0.3333333333333333]
+dmd:
+  basis: real                    # real (A2, section 2.9a; default) | exact (section 2.9 steps 4 and 5; experiments)
+  real_kappa_max: 3.0            # A2: upper bound of each decay-rate increment d_j (lambda_{j+1}/lambda_j >= e^-3)
+  real_kappa_sep: 0.005          # A2: lower bound of d_j, j >= 2 (consecutive lambdas differ by >= 0.5%)
+  energy_report: 0.99            # A2: r_99, the PRD section 6 energy rank, reported only
+  unstable: clip                 # clip | keep (section 2.9 step 5; exact basis only)
+  stab_tol: 1.0e-9
+  imag_tol: 1.0e-10
+  sigma_rel_tol: 1.0e-10
+  dup_tol: 1.0e-8
+  r_max: null
+gp:
+  alpha: 1.0e-10
+  normalize_y: true
+  n_restarts_optimizer: 5
+  constant_bounds: [1.0e-3, 1.0e+3]
+  length_scale_bounds: [1.0e-2, 1.0e+2]
+  noise_init: 1.0e-4
+  noise_bounds: [1.0e-10, 1.0]
+  std_includes_basis_residual: true
+tuning:
+  n_trials: 30                   # cap; the grid below has 6 x 1 x 2 x 2 = 24 points (A2)
+  sampler: grid
+  space:                         # product order: last dimension fastest
+    rank:          {type: choice, values: [2, 3, 4, 5, 6, 8]}   # A2: replaces energy (D-019)
+    kernel:        {type: choice, values: [matern25]}           # A2: fixed (matern15 changed J by < 1e-4 in review 1)
+    fluid_weights: {type: choice, values: [d012, equal]}
+    gp_target:     {type: choice, values: [coef, proj]}
+report: {plateau_frac: 0.98, breakthrough_frac: 0.01, forecast_steps: 80, coverage_z: 1.959963984540054}
+speed: {n_batch_rows: 10000, n_calls: 200, call_rows: 32, mcmc_calls: 5000, limit_s: 600}

@@ -1,0 +1,50 @@
+# Task 2 LSTM proxy (spec docs/specs/task2.md sections 1.2 and 3). All keys are required.
+# Relative paths resolve against the current working directory; run from the repository root.
+model: lstm                      # must equal --model
+seed: 0                          # seed of the trial plan (runs.seed)
+paths:
+  db: data/processed/dwc26.sqlite
+  models: outputs/models
+  logs: outputs/logs
+data:
+  t_cut: null                    # null = all T dates; int = first t_cut dates (Task 5 backtest); --t-cut overrides
+objective:
+  fluids: [oil, water]           # J = mean NRMSE of these fluids (section 2.5)
+fluid_weight_sets:               # [oil, gas, water]; each set sums to 1 (D-012)
+  d012: [0.25, 0.25, 0.5]
+  equal: [0.3333333333333333, 0.3333333333333333, 0.3333333333333333]
+network:
+  input_options: [A, B, C]       # strata of the plan; one final ensemble for each (D-014)
+  x_affine: true                 # u = 2x - 1 (Article 2, p. 989)
+training:
+  seeds: [0, 1, 2, 3, 4]         # ensemble members (PRD section 6)
+  tune_seeds: 1                  # members trained for each trial: seeds[:tune_seeds] (D-015)
+  max_epochs: 1000
+  patience: 50
+  min_delta: 0.0
+  grad_clip_norm: 1.0            # null = no clipping
+  adam: {beta1: 0.9, beta2: 0.999, eps: 1.0e-8, weight_decay: 0.0}
+  dtype: float32
+  torch_threads: 1
+  n_jobs: 6                      # worker processes for the fits; results do not depend on it (test M17)
+  predict_batch: 2048            # rows per forward pass in predict, rollout and forecast
+tuning:
+  n_trials: 30
+  sampler: lhs
+  space:                         # dimension order = draw order (section 2.14)
+    num_layers:    {type: choice, values: [1, 2]}
+    hidden_size:   {type: choice, values: [16, 32, 48, 64]}
+    lr:            {type: loguniform, low: 3.0e-4, high: 1.0e-2}
+    batch_size:    {type: choice, values: [4, 8, 16, 32]}
+    fluid_weights: {type: choice, values: [d012, equal]}
+report:
+  plateau_frac: 0.98             # PRD section 7 plateau end
+  breakthrough_frac: 0.01        # PRD section 7 water breakthrough
+  forecast_steps: 80             # continuation check in the report (section 1.7)
+  coverage_z: 1.959963984540054  # 95% two-sided normal quantile
+speed:
+  n_batch_rows: 10000            # one predict call (PRD section 7 cost metric)
+  n_calls: 200                   # timed calls of call_rows rows
+  call_rows: 32                  # walkers (PRD section 8)
+  mcmc_calls: 5000               # steps (PRD section 8)
+  limit_s: 600                   # PRD section 6

@@ -1,0 +1,7 @@
+# Task 2 benchmark B0: mean training curve (spec docs/specs/task2.md section 2.11). Not a proxy.
+model: b0
+seed: 0                          # logged (V7, V8); B0 uses no randomness
+paths: {db: data/processed/dwc26.sqlite, models: outputs/models, logs: outputs/logs}
+data: {t_cut: null}
+objective: {fluids: [oil, water]}
+report: {plateau_frac: 0.98, breakthrough_frac: 0.01, forecast_steps: 80, coverage_z: 1.959963984540054}

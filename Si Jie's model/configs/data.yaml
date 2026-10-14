@@ -1,0 +1,59 @@
+# Task 1 (data preparation) settings. Spec: docs/specs/task1.md section 1.2.
+# All keys are required. Relative paths resolve against the current working
+# directory; run every command from the repository root.
+seed: 0                         # logged (V7, V8); Task 1 uses no randomness
+paths:
+  file01: data/raw/01 Introduction.xlsx
+  file02: data/raw/02 Field Production.xlsx
+  db: data/processed/dwc26.sqlite
+  arrays: data/processed/arrays.npz
+  report: outputs/reports/data_checks.md
+  logs: outputs/logs
+file01:
+  sheet: Uncertainty Values
+  label_column: Item
+  label_pattern: '^Case\s+(\d+)$'
+  columns:                      # file header -> internal name; this order is the column order of X
+    Fault Transmissibility: fault_trans
+    Porosity Multiplier: poro_mult
+    Permeability Multiplier: perm_mult
+    Aquifer Pore Volume: aquifer_pv
+file02:
+  names_row: 2                  # 1-based Excel rows
+  units_row: 3
+  first_data_row: 4
+  date_column: Date
+  case_pattern: '^Case_(\d+)$'
+  history_column: RAMP_History
+  sheets:                       # quantity key -> sheet name and expected unit (text inside [...])
+    oil_rate:   {name: Oil production rate,         unit: STB/d}
+    oil_cum:    {name: Oil production cumulative,   unit: STB}
+    gas_rate:   {name: Gas production rate,         unit: MSCF/d}
+    gas_cum:    {name: Gas production cumulative,   unit: MSCF}
+    water_rate: {name: Water production rate,       unit: STB/d}
+    water_cum:  {name: Water production cumulative, unit: STB}
+  field_sheet:
+    name: Field Production
+    columns:                    # file header -> internal name
+      Date: date
+      Oil production rate (STB/d): oil_rate
+      Gas production rate (MSCF/d): gas_rate
+      Water production rate (STB/d): water_rate
+      Water injection rate (STB/d): water_inj_rate
+  date_round: ms                # round parsed timestamps to the millisecond
+split:                          # inclusive case-number ranges (PRD section 1)
+  train: [1, 70]
+  val: [71, 85]
+  test: [86, 100]
+x_bounds:
+  source: design                # design | override
+  override: null                # {fault_trans: [lo, hi], poro_mult: [...], perm_mult: [...], aquifer_pv: [...]}
+  citation: null                # required, non-empty, when source = override
+rates:
+  definition: auto              # auto | R1 | R2
+checks:
+  c4_rel_tol: 1.0e-6
+  c6_rel_tol: 0.01
+  c6_floor_frac: 1.0e-3
+  c8_abs_tol: 0.0
+  c10_rel_tol: 1.0e-5           # C10 counts a date as outside only above this relative excess (A1, D-009); range 0 to 1e-3

@@ -1,0 +1,64 @@
+# Task 3 settings: evaluate, backtest, select, freeze (spec docs/specs/task3.md sections 1.2 and 3).
+# All keys are required. Relative paths resolve against the current working directory; run every
+# command from the repository root.
+seed: 0                                    # X draw of the cost benchmark
+paths:
+  db: data/processed/dwc26.sqlite
+  models: outputs/models
+  reports: outputs/reports
+  figures: outputs/figures/task3
+  logs: outputs/logs
+candidates:                                # train run of each model: 'latest' or an explicit run ID (section 1.5.1)
+  runs: {b0: latest, b1: latest, rnn: latest, lstm: latest, dmd: latest}
+  require_clean: true                      # candidate runs must have git_dirty = 0
+strategy: {rnn: S3, lstm: S3, dmd: S4}     # PRD section 6
+runtime:
+  torch_threads: 1
+consistency_rel_tol: 1.0e-7                # recomputed vs stored Task 2 predictions, relative to y_factor
+metrics:
+  objective_fluids: [oil, water]           # J, steps 1 and 2, BT (PRD section 7)
+  coverage_z: 1.959963984540054            # 95% two-sided normal quantile
+  coverage_target: [0.90, 0.98]            # PRD section 7
+events:
+  plateau_frac: 0.98                       # PRD section 7
+  breakthrough_frac: 0.01                  # PRD section 7
+mismatch:
+  window: ["1999-01-01", "2008-01-01"]     # K, inclusive (PRD section 8)
+  fluids: [oil, water]                     # PRD section 8
+  alpha: 0.10                              # Article 4, p. 1111 and p. 1113-1114
+  beta: 0.02                               # PRD section 8 (assumption)
+  local_n: 5                               # PRD section 7
+continuation:
+  end_date: "2028-01-01"                   # n_fc = quarters from the last history date (80 on the real data)
+plausibility:
+  p2_mode: reject                          # reject | report (D-020: report if the user confirms new wells)
+  p2_ratio: 1.05                           # D-020
+  p2_case_share: 0.5                       # D-020: fail if more than this share of the cases rise
+  p3_hist_quarters: 8                      # D-022
+  p3_fc_quarters: [9, 16]                  # D-022
+  p3_ratio_min: 0.5                        # D-022
+  p3_min_decline: 0.002                    # per quarter; cases with a smaller history decline are excluded from R
+  gor_rel_tol: 0.005                       # D-021 (c)
+  gor_oil_frac: 0.01                       # GOR only where oil > this share of its maximum (Task 2 report)
+backtest:
+  cutoff_date: "2005-01-01"                # PRD section 9
+  models: [rnn, lstm, dmd]                 # PRD section 9 step 2
+  model_configs: {rnn: configs/models/rnn.yaml, lstm: configs/models/lstm.yaml, dmd: configs/models/dmd.yaml}
+  v6_horizons: [9, 12]                     # PRD section 9 step 5, inclusive
+  reuse: {}                                # optional: model -> an existing backtest train run (section 1.5.2)
+selection:
+  band: 0.05                               # PRD section 7 step 4
+  secondary_only: [dmd]                    # D-022
+cost:
+  n_rows: 10000                            # PRD section 7
+  repeats: 3
+freeze:
+  tag: freeze-proxy                        # PRD section 7 step 6
+  repo_dir: null                           # null = the repository that holds the package
+  decisions_path: docs/decisions.md
+  frozen_paths: [src/dwc26/evaluation, src/dwc26/models, src/dwc26/forecast/backtest.py,
+                 src/dwc26/forecast/dates.py, src/dwc26/hm/objective.py, configs/evaluate.yaml, configs/models]
+  min_override_chars: 10
+report:
+  plots: true
+  dpi: 120

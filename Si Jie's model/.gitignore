@@ -1,0 +1,25 @@
+# Raw and derived data stay out of version control (V12)
+*.xlsx
+*.xls
+data/raw/
+data/processed/
+outputs/
+*.sqlite
+*.npz
+
+# Reference articles and their extracted text (copyrighted, kept local)
+*.pdf
+refs/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Local settings
+.claude/settings.local.json
+.vscode/
