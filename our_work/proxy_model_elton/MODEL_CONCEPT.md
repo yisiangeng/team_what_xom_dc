@@ -66,8 +66,9 @@ and mean transmissibility in both directions.
 
 Why this works: the grid of every case is a scaled copy of the base case (verified in the data analysis),
 so a handful of summaries captures the whole geological difference. These features make the "global scale
-effects" easy for the network to read — and in tuning they clearly helped: the grid-feature version scored a
-5-fold CV RMSE of **36.3** versus **~55** for the four parameters alone.
+effects" easy for the network to read — and in tuning they clearly helped: on the fold-0 screen the
+grid-feature version cut the score from 55.0 to 30.9 at equal settings, and the winner went on to a
+full 5-fold cross-validation score of **36.3**.
 
 ---
 
@@ -85,10 +86,10 @@ effects" easy for the network to read — and in tuning they clearly helped: the
 
    About **4x better than the classic linear baseline** and far better than "just predict the average".
    Beating strong, simple baselines is what proves the deep-learning step actually adds value.
-3. **Data-frugal design.** With only ~85 labeled cases available, residual learning + a small network +
+3. **Data-frugal design.** With only 70 training cases available, residual learning + a small network +
    regularization + ensembling is the right toolbox — not a giant model.
 4. **Honest evaluation.** Validation and test cases were never used for fitting, and the hardest cases are
-   the ones slightly outside the training parameter range (cases 82, 87, 98) — we report that openly.
+   among the few slightly outside the training parameter range (cases 75, 82, 87, 98) — we report that openly.
 
 ---
 
@@ -125,7 +126,7 @@ misfit of **0.00385**: slightly better than the best of all 100 provided cases (
 ~14× closer to the history than a typical case (0.054).
 
 **The history does not pin one answer.** ~4,900 parameter sets sit within 25% of the best misfit —
-mostly agreeing that the porosity multiplier is ≈ 1.37. The "history-matched models" (step 3: the
+mostly agreeing that the porosity multiplier is ≈ 1.36. The "history-matched models" (step 3: the
 top 20) are therefore not one truth, but a set of equally plausible explanations of the field.
 
 **Forecast (step 4).** The simulated cases stop at 2008-01-01, so no forecast data exists to learn
