@@ -65,6 +65,7 @@ The full write-ups are **`summary_hist_mat.md`** (proxy and history matching) an
 | `notebook4_forecast.ipynb` | Forecast to 2028: backtest of the methods, start-point hindcast, uncertainty, the deliverable |
 | `summary_hist_mat.md` | Findings of the proxy and the history matching, including the proxy improvement tests (section 7) |
 | `summary_forecast.md` | Forecast methods, evidence, results, limitations and sources |
+| `methodology_explained.md` | The methods and ideas of notebooks 2-4 in simple terms, with a glossary. Read this first if you are new to them |
 
 **Data, code and outputs**
 
