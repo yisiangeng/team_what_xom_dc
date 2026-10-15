@@ -1,6 +1,6 @@
 # History matching: summary of findings
 
-15 October 2026, **version 2** (improved proxy adopted). The history-match results here are also the current ones in repo version 3, because version 3 changed only the forecast start (`summary_forecast.md`).
+15 October 2026, **version 4** (choice of the 10 aligned with the organiser's FAQ, section 8). Version 2 adopted the improved proxy; version 3 changed only the forecast start (`summary_forecast.md`); version 4 changes how the 10 are chosen and adds physical checks. The posterior is the same as in versions 2 and 3. Version 3 is archived in `archive/v3_pre_faq_2026-10-15/`.
 - **Notebooks:** `notebook2_proxy_model.ipynb` (proxy) and `notebook3_hist_match.ipynb` (history matching).
 - **Shared model code:** `src/proxy_lib.py`. **Results:** `hist_match_output/` (see its `README.md`).
 - **Version 1 (Elton's cumulative proxy) is archived** in `archive/v1_baseline_2026-10-15/`, with its results and a revert command. Section 7 records why version 2 replaced it.
@@ -14,12 +14,13 @@ Scores are **NRMSE as a share of the observed cumulative on 2008-01-01**, oil an
   - A tested improvement, which learns only oil and water and has tuned training settings, cuts the water error on unseen cases by about 40 % (test: 0.14 % against 0.24 % of the final cumulative), with oil unchanged or better.
   - The gain is statistically significant: about 20 % lower error on both phases in an out-of-fold check on 85 cases (p ~ 1e-9). Its effect on the history match is small, because the proxy error was already far below the misfit (section 7).
   - The proxy ranks the validation and test cases exactly like the simulator (Spearman 1.000).
-- **The history match works.** All 8 automated checks pass:
+- **The history match works.** All 13 automated checks pass:
   - the MCMC converged (R-hat 1.024 or less);
   - an independent direct-sampling check agrees;
-  - the recovery test found the true parameters of 5 known cases in all 40 parameter-runs.
-- **The 10 chosen** are 5 simulated cases (6, 97, 76, 11, 40) and 5 new parameter sets from the posterior.
-  - Scores are 0.494-0.537 %. The best simulated case scores 0.494 % and the median case 6.6 %.
+  - the recovery test found the true parameters of 5 known cases in all 40 parameter-runs;
+  - the 10 are physically consistent: zero before first production, cumulatives that never fall (section 8).
+- **The 10 chosen, by history-match quality first** (organiser FAQ 9): 6 simulated cases (6, 97, 76, 11, 40, 73) and 4 new parameter sets from the posterior.
+  - Scores are 0.491-0.544 %, all within the proxy error of the best score. The best simulated case scores 0.494 % and the median case 6.6 %.
   - All 10 lie inside the train range, and none is ruled out by the history.
 - **What the history pins down.** Porosity multiplier 1.366 (5-95 %: 1.342-1.383). Permeability multiplier and aquifer volume are only partly constrained; fault transmissibility is not constrained.
   - **What this means for the forecast.** The parameters the history leaves open hardly change the forecast. The 10 cases, and 200 posterior sets, differ by only about 1 % in 2028 oil. The larger uncertainty comes from the model's structure (next point).
@@ -73,16 +74,16 @@ It keeps Elton's network (2 x 128, SiLU, dropout 0.05), inputs, grid mapper and 
 
 The pipeline is a hybrid of the team's drafts:
 - **Yi Siang's v1/v2:** score, window, likelihood, MCMC, checks 10b-10g.
-- **Zi Yang's approach:** choose from the posterior with k-means.
-- **Team decision:** prefer simulated cases; test cases are allowed as candidates.
+- **Zi Yang's approach:** posterior sets as candidates for the 10.
+- **Team decisions:** simulated cases first among equal matches; test cases are allowed as candidates; the 10 are chosen by match quality first (organiser FAQ 9, version 4).
 
 | Choice | Setting |
 |---|---|
-| Matched | Cumulative oil and water, 37 dates. Gas is left out (it is about 0.3633 x oil) |
+| Matched | Cumulative oil and water, 37 dates. Gas is left out (it is about 0.3633 x oil). The 4 zero quarters before production are valid data (FAQ 12-13), but every candidate matches them exactly, so they cannot change a score (checked) |
 | Prior | Uniform on the **train range**, no padding |
 | Likelihood | Gaussian. Noise level sampled. AR(1) correlation (estimated rho = 0.80). The proxy error is added to the variance |
 | Sampler | emcee, 4 ensembles x 16 walkers x 12,000 steps, starting across the whole prior box, half dropped as burn-in |
-| Choice of 10 | Candidates = the 100 simulated cases + 4,000 posterior sets. Rule out `I_max > 3`. k-means into 10 clusters, one per cluster. Within a cluster, a simulated case wins unless a new set beats it by more than eps |
+| Choice of 10 | Candidates = the 100 simulated cases + 4,000 posterior sets. Rule out `I_max > 3`. Keep the **equal-best band** (score within eps of the best). Inside it, simulated cases first by score, then new sets by score; skip near-copies (distance < 0.05). Rank by score |
 | Recovery test | 5 validation cases x 2 noise levels, 2 ensembles x 10,000 steps |
 
 ## 3. Results
@@ -119,24 +120,31 @@ The best possible match is only 0.01 % better than case 6, far below the proxy e
 
 | Rank | Source | Case | Score | Oil NRMSE | Water NRMSE | I_max | Fault | Poro | Perm | Aquifer |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | simulated | 6 (train) | 0.494 % | 0.21 % | 0.67 % | 2.16 | 0.058 | 1.358 | 2.47 | 119.8 |
-| 2 | new set | - | 0.495 % | 0.22 % | 0.67 % | 2.01 | 0.054 | 1.364 | 3.19 | 164.8 |
-| 3 | new set | - | 0.497 % | 0.21 % | 0.67 % | 2.13 | 0.086 | 1.370 | 2.79 | 180.7 |
-| 4 | new set | - | 0.499 % | 0.21 % | 0.67 % | 2.21 | 0.103 | 1.368 | 2.78 | 160.1 |
-| 5 | new set | - | 0.503 % | 0.21 % | 0.68 % | 2.02 | 0.138 | 1.365 | 3.33 | 178.1 |
-| 6 | new set | - | 0.510 % | 0.21 % | 0.69 % | 1.94 | 0.090 | 1.346 | 4.42 | 121.1 |
-| 7 | simulated | 97 (test) | 0.522 % | 0.23 % | 0.70 % | 1.86 | 0.052 | 1.346 | 5.41 | 153.9 |
-| 8 | simulated | 76 (validation) | 0.528 % | 0.24 % | 0.71 % | 2.60 | 0.108 | 1.383 | 1.64 | 182.2 |
-| 9 | simulated | 11 (train) | 0.533 % | 0.24 % | 0.71 % | 2.63 | 0.125 | 1.354 | 7.34 | 188.1 |
-| 10 | simulated | 40 (train) | 0.537 % | 0.24 % | 0.72 % | 2.65 | 0.144 | 1.354 | 4.96 | 132.5 |
+`Rank (all)` is the rank by score among all 4,100 candidates.
 
-- **Why 5 new sets.** These 5 clusters of the posterior contain no simulated case that is not ruled out. In the other 5 clusters, a simulated case was within eps of the best new set and was kept.
-- **The order inside the 10 is not meaningful.** The scores span 0.043 %, less than the proxy error eps (0.111 %). Treat the 10 as equally good matches. The new sets' scores come from the proxy; the simulated cases' are exact.
-- **Values at 2008-01-01.** Oil 38.59-38.72 MMSTB (observed 38.38); water 12.48-12.58 MMSTB (observed 12.81). Elton's 3-phase misfit of the 10: 0.0040-0.0044.
-- **Changes from version 1.**
-  - Simulated cases 6, 76, 11 and 40 are kept; case 73 is replaced by case 97 (the best test case).
-  - The 5 new sets are new draws.
-  - The mean score is 0.512 % (version 1: 0.505 %; the difference is within the proxy error).
+| Rank | Source | Case | Score | Oil NRMSE | Water NRMSE | I_max | Rank (all) | Fault | Poro | Perm | Aquifer |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | new set | - | 0.491 % | 0.23 % | 0.66 % | 1.99 | 1 | 0.057 | 1.356 | 4.99 | 172.6 |
+| 2 | new set | - | 0.492 % | 0.23 % | 0.66 % | 2.10 | 2 | 0.096 | 1.356 | 5.09 | 168.5 |
+| 3 | simulated | 6 (train) | 0.494 % | 0.21 % | 0.67 % | 2.16 | 3 | 0.058 | 1.358 | 2.47 | 119.8 |
+| 4 | new set | - | 0.495 % | 0.22 % | 0.67 % | 2.01 | 4 | 0.054 | 1.364 | 3.19 | 164.8 |
+| 5 | new set | - | 0.495 % | 0.23 % | 0.66 % | 2.06 | 5 | 0.131 | 1.352 | 5.94 | 177.2 |
+| 6 | simulated | 97 (test) | 0.522 % | 0.23 % | 0.70 % | 1.86 | 1,512 | 0.052 | 1.346 | 5.41 | 153.9 |
+| 7 | simulated | 76 (validation) | 0.528 % | 0.24 % | 0.71 % | 2.60 | 1,921 | 0.108 | 1.383 | 1.64 | 182.2 |
+| 8 | simulated | 11 (train) | 0.533 % | 0.24 % | 0.71 % | 2.63 | 2,178 | 0.125 | 1.354 | 7.34 | 188.1 |
+| 9 | simulated | 40 (train) | 0.537 % | 0.24 % | 0.72 % | 2.65 | 2,393 | 0.144 | 1.354 | 4.96 | 132.5 |
+| 10 | simulated | 73 (validation) | 0.544 % | 0.26 % | 0.72 % | 2.32 | 2,661 | 0.083 | 1.354 | 1.47 | 93.3 |
+
+- **How they were chosen.** The best score is 0.491 % and eps is 0.111 %, so the equal-best band is score <= 0.601 %. It holds 3,786 candidates: 6 simulated cases and 3,780 new sets.
+  - The 6 simulated cases in the band go first, because their curves are exact.
+  - The 4 remaining places go to the 4 best new sets by score (ranks 1, 2, 4 and 5 of all candidates). No near-copy had to be skipped.
+- **Why the simulated cases rank 1,512-2,661 overall and are still chosen.** Their scores (0.494-0.544 %) differ from the best new set by less than eps, so the difference is not real: it is within the proxy's own error. Between equal matches, an exact simulator curve is the more defensible choice (FAQ 8).
+- **The order inside the 10 is not meaningful.** The scores span 0.053 %, less than eps. Treat the 10 as equally good matches. The new sets' scores come from the proxy; the simulated cases' are exact.
+- **Values at 2008-01-01.** Oil 38.42-38.72 MMSTB (observed 38.38); water 12.48-12.58 MMSTB (observed 12.81). Elton's 3-phase misfit of the 10: 0.0040-0.0045.
+- **Changes from version 3** (one per k-means cluster, diversity first; `archive/v3_pre_faq_2026-10-15/`).
+  - Kept: simulated cases 6, 97, 76, 11, 40 and one new set (set_0088).
+  - Added: simulated case 73 and the 3 best new sets overall. Removed: 4 new sets that ranked 13, 24, 87 and 513 by score.
+  - Mean score 0.513 % (version 3: 0.512 %), worst 0.544 % (0.537 %). The difference is far below eps: the match quality is the same, but the rule now follows the FAQ.
 
 Curves: `hist_match_output/top10_series_real.csv`. Figure: `figs/fit_top10_real.png`.
 
@@ -144,14 +152,16 @@ Curves: `hist_match_output/top10_series_real.csv`. Figure: `figs/fit_top10_real.
 
 | Choice | Simulated cases | Mean score | Worst score | Not ruled out | Outside train range | Spread (mean pairwise distance) |
 |---|---|---|---|---|---|---|
-| **Hybrid (this pipeline)** | 5 | 0.512 % | 0.537 % | 10 | 0 | 0.57 |
+| **Quality first (this pipeline, version 4)** | 6 | 0.513 % | 0.544 % | 10 | 0 | 0.62 |
+| Hybrid k-means (version 3) | 5 | 0.512 % | 0.537 % | 10 | 0 | 0.57 |
 | Simulated only (v1 method A) | 10 | 0.626 % | 0.925 % | 6 | 0 | 0.72 |
 | Elton's 10 | 0 | 0.531 % | 0.572 % | 10 | **9** | **0.43** |
 | Zi Yang's 10 | 0 | 0.513 % | 0.520 % | 10 | 0 | 0.73 |
 
 - **Simulated only** has to go down to cases scoring 0.93 %, and 4 of its 10 are ruled out.
 - **Elton's 10** lie outside the train range in 9 cases out of 10 (aquifer up to 207 against 199.8), where the proxy extrapolates. They are also the least diverse.
-- **Zi Yang's 10** are similar to ours in score and spread. Ours replace half of them with simulated cases, whose curves are exact.
+- **Zi Yang's 10** are similar to ours in score and spread. Ours replace 6 of them with simulated cases, whose curves are exact.
+- **Quality first against k-means.** The same match quality (within 0.001 % on the mean) and, as it happens, a slightly larger spread. Spread is reported for information only; under the FAQ it only breaks ties.
 
 ## 4. Does the pipeline work? Recovery test
 
@@ -162,10 +172,10 @@ We took 5 validation cases (78, 79, 81, 83, 85) as fake histories, with 0.5 % an
 | True parameters inside the posterior 5-95 % interval | **40 of 40** |
 | Porosity error of the posterior mean | 0.5 % on average (absolute), 1.3 % at most |
 | Convergence | R-hat 1.080 or less in every run |
-| Fit of the chosen 10 to the clean fake history | 0.09-0.32 %, against 0.69-1.45 % for the best 10 simulated cases of the pool (optimistic for the new sets: their curves are the proxy's) |
-| Fallback | In 3 of the 5 runs at 2 % noise, fewer than 10 candidates passed the implausibility cut (0, 15 and 0). The pipeline then clustered the best 419 candidates by score instead. The recovery still worked in these runs |
+| Fit of the chosen 10 to the clean fake history | 0.08-0.59 %, against 0.68-1.45 % for the best 10 simulated cases of the pool (optimistic for the new sets: their curves are the proxy's) |
+| Fallback | In 2 of the 5 runs at 2 % noise, no candidate passed the implausibility cut. The pipeline then used the best 50 candidates by score instead. The recovery still worked in these runs |
 
-All 8 automated checks in notebook 3 pass.
+All 13 automated checks in notebook 3 pass.
 
 ## 5. Limitations
 
@@ -176,9 +186,9 @@ All 8 automated checks in notebook 3 pass.
    - The forecast corrects the 2008 level by starting from the observed values, chosen by a blind hindcast (`summary_forecast.md`, section 5). The decline shape still comes from the cases.
 2. **Edge of the design range.** The proxy's single best point sits on two edges of the box (lowest fault transmissibility, highest permeability). The aquifer posterior leans high. The pipeline does not leave the train range, where the proxy is valid.
 3. **The 10 are tied.** Score differences are smaller than the proxy error.
-4. **New sets have no simulator run.** Their 1998-2008 curves come from the proxy (error about 0.07 % oil, 0.14 % water).
+4. **New sets have no simulator run.** Their 1998-2008 curves come from the proxy (error about 0.07 % oil, 0.14 % water). Their raw water curves dip by up to 50 STB in 1999 (0.0004 % of the final value), which the export removes (section 8).
 5. **Assumed error.** The implausibility cut uses an assumed observation + model error of 1 % (provisional). It is used only to rule out poor candidates.
-6. **The choice of 10 depends on how the proxy error is measured.** In the tests, using an out-of-fold error (larger) instead of the validation error changed which clusters got new sets. The posterior did not change.
+6. **The choice of 10 depends on how the proxy error is measured.** eps sets the width of the equal-best band. A larger eps (for example the out-of-fold error) would let more simulated cases into the band and fewer new sets into the 10. The posterior does not depend on it.
 
 ## 6. From the history match to the forecast
 
@@ -186,6 +196,7 @@ The forecast to 2028 is done: `notebook4_forecast.ipynb`, `summary_forecast.md`,
 - It uses the 10 cases above, in rank order (sheet `Case k` = rank k).
 - Because of limitation 1, each forecast starts from the observed 2008 values. The case gives only the shape.
 - Result: oil 58.7 MMSTB in 2028 (10 cases within about 1 %). The wider range, which adds the start-point and model uncertainty, is 54.2-61.7 MMSTB.
+- The forecast's own physical checks (tank-model constants, water-oil-ratio trend) are in `summary_forecast.md`, section 6b.
 
 Remaining work: the documents, the Power BI dashboard and the video (due 20 Oct).
 
@@ -273,4 +284,38 @@ This is a paired comparison on the same cases. For each case, the error is the R
 ### Lessons
 
 - **15 validation cases are a small sample.** The GP average looked best there and was worst on the test cases. The CV and out-of-fold checks on more cases are what exposed it.
-- **The history match is robust to the proxy:** porosity, the convergence and the best matches stay the same. The proxy mostly affects which posterior clusters get new sets, and the size of eps.
+- **The history match is robust to the proxy:** porosity, the convergence and the best matches stay the same. The proxy mostly affects the size of eps, and so how many new sets enter the 10.
+
+## 8. Organiser FAQ alignment (version 4, 15 October 2026)
+
+The organiser released a FAQ (`faq.md`) after version 3. Each point was checked against the pipeline. One rule changed (FAQ 9) and checks were added (FAQ 5, 12-13). Restore point: `archive/v3_pre_faq_2026-10-15/`.
+
+| FAQ | What it asks | Status before | What we did |
+|---|---|---|---|
+| 1, 4 | Calibrate the uncertain parameters against the history before forecasting | Done | No change |
+| 2 | Keep future operating conditions as in the data | Done: injection held at its 2008 value, no new wells | No change |
+| 3 | Use only the data provided | Done: online sources were used for methods only | No change |
+| 5 | Reproduce the trends, capture key behaviour, stay physically realistic | Partly shown | Added physical checks: in notebook 3 (below) and in notebook 4 (`summary_forecast.md`, section 6b). The known gap (late water rise) is stated openly |
+| 6 | No need for a perfect point-by-point match | Done: the score is an average over 37 dates | No change |
+| 7 | Submit the forecasts of the 10 best cases | Done | No change |
+| 8 | The 10 should match the history most closely and be technically defensible | Mostly | Simulated cases go first among equal matches; the new sets are justified below |
+| **9** | **Selection driven by history-match quality, not by diversity** | **Not met: one per k-means cluster (ranks 3 to 2,393)** | **Changed to quality first: equal-best band, simulated first, then new sets by score** |
+| 10 | Choose from the full population, not only train, validation or test | Done: all 100 cases are candidates | No change |
+| 11 | Evaluation at field level | Done | No change |
+| 12, 13 | The early zero quarters are valid data, not missing | Done in effect | Now stated, and checked: the history and all 100 cases are exactly zero there, and so are the chosen new sets |
+| 14 | 20-year horizon, new template | Done: the template we use is the new one (80 quarters to 2028-01-01) | No change |
+
+**Why new parameter sets are allowed (FAQ 8 and 10).** FAQ 10 answers a question about the train, validation and test cases, so "the full population" most likely means all 100 cases. It does not exclude other sets. FAQ 1 and kick-off slide 26 ask teams to "identify and optimize" the parameters, which yields sets that are not among the 100 runs. The organisers' reference paper (Zhang et al. 2023) uses MCMC posterior samples on a proxy in the same way. The new sets are defensible because:
+- the proxy error is small (test: oil 0.06 %, water 0.14 % of the final value) and is part of the likelihood;
+- the recovery test finds known answers (40 of 40 parameter-runs);
+- a new set never displaces an equally good simulated case.
+
+**Physical realism of the history match (FAQ 5).** Four layers are checked:
+
+| Layer | Check | Result |
+|---|---|---|
+| Parameters | All 10 inside the sampled range, none at an edge | Pass. Porosity multiplier 1.346-1.383 of a range 0.80-1.49: high, but inside |
+| Parameters | Not ruled out by the history (`I_max <= 3`) | Pass (1.86-2.65) |
+| Curves | Zero before first production (4 quarters, 1998) | Pass for the history, all 100 cases and the 4 new sets |
+| Curves | Cumulatives never fall | Simulated: pass. New sets: the raw proxy water curve dips by up to 50 STB in 1999 (0.0004 % of the final value), because the network is not forced to be monotone. The exported curves use the running maximum, which removes the dip; the check then passes |
+| Behaviour | Trends reproduced | Oil and water totals within 0.1-2.6 % in 2008. The late water rise is missed (limitation 1); the forecast corrects for it by its start point |

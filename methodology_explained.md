@@ -144,7 +144,7 @@ Notebook 2 writes `hist_match_input/`: the proxy file, its error, the simulated 
    exact simulator curves         the proxy tests many thousands of sets
    "which known case fits?"       "which parameter values are likely?"
                   \                  /
-               [C] HYBRID CHOICE OF THE 10
+               [C] CHOICE OF THE 10, BEST MATCH FIRST
 ```
 *Method A is exact but limited to 100 points. Method B covers the whole range but depends on the proxy.*
 
@@ -156,25 +156,28 @@ Notebook 2 writes `hist_match_input/`: the proxy file, its error, the simulated 
 - **MCMC (Markov chain Monte Carlo).** This method draws samples from the posterior. "Walkers" move through the parameter space. They spend more time where the fit is good. We use the `emcee` package, 4 independent groups of 16 walkers.
 - **Convergence checks.** **R-hat** compares the independent groups. If R-hat is below 1.1, they agree. **ESS (effective sample size)** is the number of independent samples. A larger ESS gives a more reliable result.
 
-### 2.4 The hybrid choice of the 10
+### 2.4 The choice of the 10: best match first
 
 ```
  candidates: 100 simulated cases  +  sets drawn from the posterior
         |
  rule out: implausibility > 3   (clearly does not fit)
         |
- k-means: 10 groups in parameter space   (10 different explanations)
+ equal-best band: score within the proxy error of the best score
         |
- best of each group: a simulated case wins,
- unless a new set is better by more than the proxy error
+ inside the band: simulated cases first, then new sets, by score
+ (skip a set that is a near-copy of one already chosen)
         |
  the 10, ranked by score
 ```
-*Clustering spreads the 10 over the region that the history allows.*
+*The organiser's FAQ asks for history-match quality first, so the score decides.*
 
 - **Implausibility.** This is the worst residual divided by the expected error. If it is above 3, the set is clearly wrong, and we remove it.
-- **k-means clustering.** This puts similar parameter sets into one group. One set per group gives 10 *different* explanations of the field. Elton's 10 were nearly identical, so they understated the uncertainty.
-- **Preference for simulated cases.** A simulated curve is exact; a proxy curve has an error. If two scores differ by less than the proxy error, we cannot tell them apart. In that case we take the simulated case.
+- **Equal-best band.** The proxy has an error (eps, 0.11 % in score units). Two scores closer than eps cannot be told apart. So every candidate within eps of the best score is an equally good match.
+- **Simulated cases first.** A simulated curve is exact; a proxy curve has an error. Among equal matches, we take the simulated cases first. The new sets fill the remaining places, best score first.
+- **Near-copies.** Two almost identical parameter sets add nothing, so we skip the second one.
+- **Before the FAQ (version 3).** We used *k-means clustering* (it sorts similar parameter sets into groups) and took one set per group. That put diversity first. FAQ 9 says that match quality must come first, so k-means is now only a comparison.
+- **New sets are allowed.** The FAQ asks teams to "optimize" the parameters, and the organisers' reference paper uses posterior samples in the same way.
 
 ### 2.5 Checks
 
@@ -187,12 +190,13 @@ Notebook 2 writes `hist_match_input/`: the proxy file, its error, the simulated 
 | Hold-out (10f) | Does a good fit on early history predict the late history? |
 | Scorecard (10g) | All the scores of each simulated case in one table |
 | Recovery test (11) | If we hide a known case and use it as a fake history, does the pipeline find its parameters? |
+| Physics checks (11) | Are the 10 zero before first production, like the history? Do their cumulatives never fall? |
 
 The **recovery test** is the most important one. In it, we know the right answer, so we can check that the method finds it.
 
 ### 2.6 Main result
 
-The history fixes the porosity well (multiplier 1.34-1.38). The other parameters stay uncertain, but they change the 2028 oil by only about 1 %. The 10 cases are 5 simulated cases (6, 97, 76, 11, 40) and 5 new parameter sets.
+The history fixes the porosity well (multiplier 1.34-1.38). The other parameters stay uncertain, but they change the 2028 oil by only about 1 %. The 10 cases are 6 simulated cases (6, 97, 76, 11, 40, 73) and 4 new parameter sets. All 10 scores are within the proxy error of the best score.
 
 ---
 
@@ -282,7 +286,25 @@ The narrow range understates the real uncertainty. In the hindcast, the 10 cases
 
 Notebook 4 copies the organiser's template `09 Template Deliverable.xlsx`. It fills the sheets `Case 1` to `Case 10` with cumulative gas, oil and water for the 80 quarters from 2008-04-01 to 2028-01-01. Sheet `Case k` holds the case with history-matching rank k. The notebook then reads the file back and checks it.
 
-### 3.8 Main result
+### 3.8 Is it physically realistic?
+
+The organiser's FAQ 5 asks that a model "remain physically realistic". We check this in three layers.
+
+```
+ Parameters  ──>  History curves  ──>  Forecast
+ (plausible?)     (physics obeyed?)    (physics obeyed after 2008?)
+```
+*A case is realistic only if it passes all three layers.*
+
+| Layer | Checks | Result |
+|---|---|---|
+| Parameters | Inside the sampled range; not ruled out by the history | Pass |
+| History curves | Zero before first production; cumulatives never fall | Pass (a 50 STB dip in a proxy water curve is removed) |
+| Forecast | Cumulatives never fall; oil rate never rises; water cut below 1; no jump at 2008; G close to the field's | Pass |
+
+One gap remains. In the field, the **WOR slope** (how fast the water-oil ratio rises) is about 1.7 times the slope of the matched cases. So the forecast probably has too much oil and too little water in later years. The wider range covers this.
+
+### 3.9 Main result
 
 - Oil in 2028: 58.7 MMSTB (it was 38.4 MMSTB in 2008).
 - Wider range: 54.2-61.7 MMSTB.
@@ -291,7 +313,7 @@ Notebook 4 copies the organiser's template `09 Template Deliverable.xlsx`. It fi
 
 ## 4. Limits to remember
 
-1. **The simulator family has a gap.** No parameter set in the design reproduces the field's late water rise. A2 fixes the 2008 starting level, but not the shape of the decline.
+1. **The simulator family has a gap.** No parameter set in the design reproduces the field's late water rise. A2 fixes the 2008 starting level, but not the shape of the decline: the cases' WOR slope is only about 60 % of the field's.
 2. **The backtest is short.** It covers at most 12 quarters, but the forecast covers 80. It supports the method, but it does not prove 20-year accuracy.
 3. **Fixed operations.** The forecast assumes constant water injection, no new wells and no change in how the field is operated after 2008.
 4. **The proxy works only inside the train range.** The search stays inside it.

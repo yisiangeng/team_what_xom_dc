@@ -6,7 +6,7 @@ All files end with the tag `_real` (the run on the observed field history). Mism
 
 | File | Rows | What it holds |
 |---|---|---|
-| `top10_cases_real.csv` | 10 | **The 10 chosen cases**, ranked 1 to 10. `source` = `simulated` (an existing case, `case_id` given) or `new_set` (a posterior parameter set, curves from the proxy). Scores: `score` (headline NRMSE of oil and water), `nrmse_oil`, `nrmse_water`, `max_rel_err`, `err_final_oil`, `err_final_water` (signed, last date), `I_max` (implausibility; 3 or less = not ruled out), `proxy_score`. Selection: `cluster`, `cluster_size`, `cluster_n_simulated`, `reason`. The 4 parameters. `misfit_elton_3phase` (Elton's objective, for comparison) and the cumulatives on 2008-01-01 |
+| `top10_cases_real.csv` | 10 | **The 10 chosen cases**, ranked 1 to 10. `source` = `simulated` (an existing case, `case_id` given) or `new_set` (a posterior parameter set, curves from the proxy). Scores: `score` (headline NRMSE of oil and water), `nrmse_oil`, `nrmse_water`, `max_rel_err`, `err_final_oil`, `err_final_water` (signed, last date), `I_max` (implausibility; 3 or less = not ruled out), `proxy_score`. Selection: `in_band` (inside the equal-best band), `rank_all` (rank by score among all candidates), `reason`. The 4 parameters. `misfit_elton_3phase` (Elton's objective, for comparison) and the cumulatives on 2008-01-01 |
 | `top10_series_real.csv` | 10 x 41 dates | The 1998-2008 cumulative curves of the 10: `rank`, `cand_id`, `source`, `case_id`, `date`, `gas_cum` [MSCF], `oil_cum` [STB], `water_cum` [STB], `curve_source` (`simulator` or `proxy`). **Input of the forecast step** |
 
 ## All candidates and scores
@@ -14,9 +14,10 @@ All files end with the tag `_real` (the run on the observed field history). Mism
 | File | Rows | What it holds |
 |---|---|---|
 | `scores_all_real.csv` | 100 | Every simulated case: scores, `rank_A`, `I_max`, `post_dist` (Mahalanobis distance to the posterior, 0-1 scaled), split, parameters |
-| `candidates_real.csv` | 100 + posterior sets | Every candidate of the hybrid choice, with the same scores, `not_ruled_out` and the k-means `cluster` (empty if ruled out) |
+| `candidates_real.csv` | 100 + posterior sets | Every candidate of the choice of 10, with the same scores, `not_ruled_out` and `in_band` (inside the equal-best band; empty if ruled out) |
+| `new_set_physics_real.csv` | 4 new sets x 3 | Physics check of the raw proxy curves of the chosen new sets: largest value before first production (must be 0) and largest drop of the cumulative (removed by a running maximum in `top10_series_real.csv`) |
 | `scorecard_real.csv` | 100 | Simulated cases, four layers: fit, rank, benchmark (`I_max`), beyond the fit (`early_%`, `late_%`, `pareto`); `chosen` |
-| `selection_comparison_real.csv` | 4 | The hybrid 10 against "simulated only" (v1 method A), Elton's 10 and Zi Yang's 10, all scored with the same proxy: best / mean / worst score, how many not ruled out, how many outside the train range, mean pairwise distance (spread) |
+| `selection_comparison_real.csv` | 5 | The quality-first 10 (adopted) against the version 3 k-means 10, "simulated only" (v1 method A), Elton's 10 and Zi Yang's 10, all scored with the same proxy: best / mean / worst score, how many not ruled out, how many outside the train range, mean pairwise distance (spread) |
 | `other_teams_10_scored_real.csv` | 20 | Elton's and Zi Yang's 10 parameter sets with their scores under our proxy |
 
 ## Posterior (MCMC) and checks

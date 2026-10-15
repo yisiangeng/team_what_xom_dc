@@ -108,3 +108,18 @@ Rule: the main notebooks stay untouched until a variant clearly wins. If nothing
 - [x] Model-error term in HM: already present (sampled noise + AR(1)); not changed, reason documented
 - [x] Notebook 4: hindcast section, A2 start, own-start sensitivity, wider range band; re-run, all checks and deliverable validation pass
 - [x] Docs: summary_forecast.md v3, summary_hist_mat.md limits, memory
+
+## 9. FAQ alignment (organiser FAQ `faq.md`, requested 15 Oct; plan only, not executed)
+Decisions: FAQ 9 -> Fix A; FAQ 8/10 -> 2a (keep hybrid, defend it); FAQ 5 -> realism checks 1-4; FAQ 12-13 and 14 -> fix.
+- [x] Restore point `archive/v3_pre_faq_2026-10-15/` (notebooks, src, outputs, docs, builders; README with revert command)
+- [x] FAQ 14: download the new template from the website; compare with `dataset_ori/09 Template Deliverable.xlsx` (sheets, columns, 80 dates); replace only if different
+- [x] FAQ 9, Fix A: change `hybrid_select` in notebook 3 to quality first
+  - band = candidates not ruled out with score <= best + eps (proxy error)
+  - inside the band: simulated cases first by score, then new sets by score, skipping near-copies (min distance)
+  - k-means kept only as information (not used to choose); rank by score
+- [x] FAQ 5, check 2: physics checks on the proxy curves of the new sets (cumulatives never fall, zero before first production) -> add to the notebook 3 check list
+- [x] FAQ 12-13: doc note that the first 4 zero quarters are valid data matched exactly by every case (optionally include them in the window, for the record)
+- [x] Rerun notebook 3; all checks pass; compare the new 10 with the old 10 (ranks, scores)
+- [x] FAQ 5, check 1: notebook 4 saves and reports tau and G per case; check G against aquifer size and tau against the history
+- [x] Rerun notebook 4; all checks and deliverable validation pass
+- [x] Docs: summary_hist_mat.md (selection rule, 2a justification, physical realism, zeros), summary_forecast.md (tau/G, realism, new 10), new "FAQ alignment" section, READMEs, methodology_explained.md, memory

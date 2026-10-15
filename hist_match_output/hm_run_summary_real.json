@@ -50,8 +50,32 @@
   "eps": 0.001107737050425349,
   "top10": [
     {
-      "cand_id": "case_6",
+      "cand_id": "set_0148",
       "rank": 1,
+      "source": "new_set",
+      "case_id": NaN,
+      "score": 0.004906152122290963,
+      "I_max": 1.9870544591669361,
+      "fault_trans": 0.05658022656790569,
+      "poro_mult": 1.3555392073765475,
+      "perm_mult": 4.986706133735579,
+      "aquifer_pv": 172.63028084193368
+    },
+    {
+      "cand_id": "set_1549",
+      "rank": 2,
+      "source": "new_set",
+      "case_id": NaN,
+      "score": 0.004917942752088608,
+      "I_max": 2.0995828583204643,
+      "fault_trans": 0.09558758308028484,
+      "poro_mult": 1.3559972420210153,
+      "perm_mult": 5.08913327232726,
+      "aquifer_pv": 168.46907648547503
+    },
+    {
+      "cand_id": "case_6",
+      "rank": 3,
       "source": "simulated",
       "case_id": 6.0,
       "score": 0.004939243791492652,
@@ -63,7 +87,7 @@
     },
     {
       "cand_id": "set_0088",
-      "rank": 2,
+      "rank": 4,
       "source": "new_set",
       "case_id": NaN,
       "score": 0.004946930739890108,
@@ -74,56 +98,20 @@
       "aquifer_pv": 164.83670380670065
     },
     {
-      "cand_id": "set_1115",
-      "rank": 3,
-      "source": "new_set",
-      "case_id": NaN,
-      "score": 0.004974494494139659,
-      "I_max": 2.1349055309168103,
-      "fault_trans": 0.08585987662798354,
-      "poro_mult": 1.3700847224116826,
-      "perm_mult": 2.794074245005728,
-      "aquifer_pv": 180.6679337034737
-    },
-    {
-      "cand_id": "set_1858",
-      "rank": 4,
-      "source": "new_set",
-      "case_id": NaN,
-      "score": 0.0049865555480828145,
-      "I_max": 2.2095208825048838,
-      "fault_trans": 0.10257249945606456,
-      "poro_mult": 1.368006859869056,
-      "perm_mult": 2.776879542115469,
-      "aquifer_pv": 160.12097994517498
-    },
-    {
-      "cand_id": "set_3570",
+      "cand_id": "set_3217",
       "rank": 5,
       "source": "new_set",
       "case_id": NaN,
-      "score": 0.0050282637075941385,
-      "I_max": 2.0233060151222473,
-      "fault_trans": 0.13838692242212616,
-      "poro_mult": 1.3645382134535688,
-      "perm_mult": 3.3323783042996897,
-      "aquifer_pv": 178.09479176986318
-    },
-    {
-      "cand_id": "set_1270",
-      "rank": 6,
-      "source": "new_set",
-      "case_id": NaN,
-      "score": 0.005100468013724291,
-      "I_max": 1.9436034866124614,
-      "fault_trans": 0.08945518741520822,
-      "poro_mult": 1.3463927663341972,
-      "perm_mult": 4.419242771674145,
-      "aquifer_pv": 121.07063310751627
+      "score": 0.004950311316030308,
+      "I_max": 2.062009868790602,
+      "fault_trans": 0.13071009522947535,
+      "poro_mult": 1.351998691342929,
+      "perm_mult": 5.94094092454376,
+      "aquifer_pv": 177.2116764910167
     },
     {
       "cand_id": "case_97",
-      "rank": 7,
+      "rank": 6,
       "source": "simulated",
       "case_id": 97.0,
       "score": 0.005218415928884011,
@@ -135,7 +123,7 @@
     },
     {
       "cand_id": "case_76",
-      "rank": 8,
+      "rank": 7,
       "source": "simulated",
       "case_id": 76.0,
       "score": 0.005279506119793367,
@@ -147,7 +135,7 @@
     },
     {
       "cand_id": "case_11",
-      "rank": 9,
+      "rank": 8,
       "source": "simulated",
       "case_id": 11.0,
       "score": 0.005326940634496878,
@@ -159,7 +147,7 @@
     },
     {
       "cand_id": "case_40",
-      "rank": 10,
+      "rank": 9,
       "source": "simulated",
       "case_id": 40.0,
       "score": 0.005370470082557866,
@@ -168,7 +156,39 @@
       "poro_mult": 1.354257637257,
       "perm_mult": 4.96132084109012,
       "aquifer_pv": 132.522202215644
+    },
+    {
+      "cand_id": "case_73",
+      "rank": 10,
+      "source": "simulated",
+      "case_id": 73.0,
+      "score": 0.005435475244295866,
+      "I_max": 2.3170771557426093,
+      "fault_trans": 0.0825557217118849,
+      "poro_mult": 1.35383607491277,
+      "perm_mult": 1.47494328643656,
+      "aquifer_pv": 93.3152256843776
     }
+  ],
+  "selection_rule": "quality first (FAQ 8-10): equal-best band, simulated first, then new sets by score, near-copies skipped",
+  "selection_info": {
+    "best_score": 0.004906152122290963,
+    "band_edge": 0.006013889172716312,
+    "n_band": 3786,
+    "n_band_simulated": 6,
+    "near_copies_skipped": 0
+  },
+  "selection_v3_kmeans": [
+    "case_6",
+    "set_0088",
+    "set_1115",
+    "set_1858",
+    "set_3570",
+    "set_1270",
+    "case_97",
+    "case_76",
+    "case_11",
+    "case_40"
   ],
   "selection_note": "",
   "checks": {
@@ -179,7 +199,12 @@
     "Recovery: chosen 10 fit the clean fake history within 1.5x the pool's best 10": true,
     "Recovery runs converged (max R-hat < 1.1 in every run)": true,
     "All 10 chosen are not ruled out (I_max <= 3)": true,
-    "All 10 chosen inside the train range": true
+    "All 10 chosen inside the train range": true,
+    "Quality first: the 10 come from the equal-best band, or the band is used up": true,
+    "Pre-production quarters: the history and all 100 simulated cases are exactly zero": true,
+    "Pre-production quarters: the chosen new sets are exactly zero": true,
+    "Physics: the cumulative curves of the 10 never fall": true,
+    "Physics: the proxy dips removed were below 0.01 % of the final value": true
   },
   "holdout": {
     "early_end_date": "2005-04-01",

@@ -1,6 +1,6 @@
 # Forecast to 2028: methods and findings
 
-15 October 2026, version 3. This version starts the forecast from the observed 2008 values. Version 2, which started from each case's own values, is archived in `archive/v2_pre_bias_fix_2026-10-15/`.
+15 October 2026, version 4. Version 3 started the forecast from the observed 2008 values. Version 4 uses the 10 cases chosen by match quality first (organiser FAQ 9, `summary_hist_mat.md` section 8) and adds physical checks of the forecast constants (section 6b). The method is unchanged. Version 3 is archived in `archive/v3_pre_faq_2026-10-15/`, version 2 (each case's own start) in `archive/v2_pre_bias_fix_2026-10-15/`.
 - **Notebook:** `notebook4_forecast.ipynb`. **Code:** `src/forecast_lib.py`.
 - **Outputs:** `forecast_output/`, including the deliverable `forecast_output/10_Final_deliverables.xlsx`.
 - **Inputs:** the 10 history-matched cases of `notebook3_hist_match.ipynb` (`summary_hist_mat.md`).
@@ -20,11 +20,11 @@
     - Starting from the observed state halved the error on the pseudo-fields (3.5 % against 7.5 %, p ~ 1e-36).
     - It also lowered the error on the real field (3.8 % against 6.5 %).
 - **Result (10 cases, P10 / P50 / P90 on 2028-01-01).**
-  - Oil: **58.5 / 58.7 / 59.0 MMSTB** (38.4 MMSTB in 2008).
-  - Water: 85.2 / 85.3 / 85.4 MMSTB.
-  - Gas: 21.2 / 21.3 / 21.4 million MSCF.
+  - Oil: **58.6 / 58.7 / 59.0 MMSTB** (38.4 MMSTB in 2008).
+  - Water: 85.0 / 85.3 / 85.5 MMSTB.
+  - Gas: 21.3 / 21.3 / 21.4 million MSCF.
   - Oil rate: about 1,600 STB/d in 2028, at a water cut of 0.87-0.88.
-- **Uncertainty.** The 10 cases agree within about 1 %, which understates the real uncertainty. The **wider range** (for slides and Power BI) is oil 54.2-61.7 MMSTB and water 82.5-90.0 MMSTB. It covers the cases, their own-start forecasts and the data-only field forecast.
+- **Uncertainty.** The 10 cases agree within about 1 %, which understates the real uncertainty. The **wider range** (for slides and Power BI) is oil 54.2-61.7 MMSTB and water 81.8-90.0 MMSTB. It covers the cases, their own-start forecasts and the data-only field forecast.
 - **Deliverable.** The 09 template filled for Case 1 to Case 10 (history-matching rank order), 80 quarters each. The Date column is left untouched. The file was read back and validated.
 
 ## 1. The problem and the organiser's instructions
@@ -83,26 +83,26 @@ All 10 start from the observed 2008-01-01 values: oil 38.38 MMSTB, water 12.81 M
 
 | Case | Source | Oil 2028 [MMSTB] | Water 2028 [MMSTB] | Gas 2028 [MM MSCF] | Oil rate 2028 [STB/d] | Water cut 2028 |
 |---|---|---|---|---|---|---|
-| 1 | simulated case 6 | 58.69 | 85.29 | 21.33 | 1,587 | 0.875 |
-| 2 | new set | 58.59 | 85.39 | 21.28 | 1,572 | 0.876 |
-| 3 | new set | 58.49 | 85.34 | 21.25 | 1,560 | 0.877 |
-| 4 | new set | 58.53 | 85.31 | 21.26 | 1,566 | 0.876 |
-| 5 | new set | 58.48 | 85.37 | 21.25 | 1,560 | 0.877 |
-| 6 | new set | 58.70 | 85.39 | 21.33 | 1,587 | 0.875 |
-| 7 | simulated case 97 | 58.95 | 85.23 | 21.42 | 1,620 | 0.873 |
-| 8 | simulated case 76 | 58.91 | 85.25 | 21.39 | 1,615 | 0.873 |
-| 9 | simulated case 11 | 59.03 | 85.14 | 21.45 | 1,632 | 0.872 |
-| 10 | simulated case 40 | 59.00 | 85.17 | 21.43 | 1,628 | 0.872 |
+| 1 | new set | 58.73 | 85.54 | 21.34 | 1,589 | 0.875 |
+| 2 | new set | 58.73 | 85.52 | 21.34 | 1,589 | 0.875 |
+| 3 | simulated case 6 | 58.69 | 85.29 | 21.33 | 1,587 | 0.875 |
+| 4 | new set | 58.59 | 85.39 | 21.28 | 1,572 | 0.876 |
+| 5 | new set | 58.73 | 85.53 | 21.34 | 1,589 | 0.875 |
+| 6 | simulated case 97 | 58.95 | 85.23 | 21.42 | 1,620 | 0.873 |
+| 7 | simulated case 76 | 58.91 | 85.25 | 21.39 | 1,615 | 0.873 |
+| 8 | simulated case 11 | 59.03 | 85.14 | 21.45 | 1,632 | 0.872 |
+| 9 | simulated case 40 | 59.00 | 85.17 | 21.43 | 1,628 | 0.872 |
+| 10 | simulated case 73 | 58.52 | 84.13 | 21.26 | 1,581 | 0.874 |
 
 **Uncertainty** (cumulative on 2028-01-01):
 
 | Set | Oil [MMSTB] | Water [MMSTB] | Gas [MM MSCF] |
 |---|---|---|---|
-| The 10 cases (P10 / P50 / P90) | 58.48 / 58.70 / 59.00 | 85.17 / 85.30 / 85.39 | 21.25 / 21.33 / 21.43 |
+| The 10 cases (P10 / P50 / P90) | 58.58 / 58.73 / 59.00 | 85.04 / 85.27 / 85.53 | 21.28 / 21.34 / 21.43 |
 | Posterior, 200 parameter sets from the MCMC, same start (P10 / P50 / P90) | 58.23 / 58.38 / 58.59 | 85.00 / 85.20 / 85.46 | 21.16 / 21.21 / 21.28 |
-| The 10 cases, own start (sensitivity, P10 / P50 / P90) | 60.70 / 61.09 / 61.69 | 82.48 / 82.92 / 83.08 | 22.05 / 22.19 / 22.41 |
+| The 10 cases, own start (sensitivity, P10 / P50 / P90) | 60.83 / 61.17 / 61.69 | 82.40 / 82.82 / 83.12 | 22.10 / 22.22 / 22.41 |
 | Field reference (the same method on the observed history, no model) | 54.16 | 90.01 | 19.68 |
-| **Wider range** (min - max of all of the above except the posterior) | **54.16 - 61.71** | **82.46 - 90.01** | **19.68 - 22.42** |
+| **Wider range** (min - max of all of the above except the posterior) | **54.16 - 61.71** | **81.83 - 90.01** | **19.68 - 22.42** |
 
 - **The spread between the 10 is narrow (about 1 %).** All 10 match the same history and now share the same start, so the method carries them along similar paths. The posterior band is similarly narrow.
 - **These bands leave out the uncertainty of the start and of the model,** which are larger. In the hindcast, the 10 blind matches' range never contained the field's water (0 of 3 cut-offs).
@@ -116,8 +116,8 @@ Figures: `forecast_fan.png` (cumulatives and rates, 1998-2028; the 10 cases, the
 
 | Rate on 2008-01-01 | Field | The 10 cases |
 |---|---|---|
-| Oil | 5,247 STB/d | 5,900-6,050 STB/d (12-15 % high) |
-| Water | 7,782 STB/d | 6,980-7,040 STB/d (about 10 % low) |
+| Oil | 5,247 STB/d | 5,840-6,050 STB/d (11-15 % high) |
+| Water | 7,782 STB/d | 6,940-7,040 STB/d (about 10 % low) |
 
 No parameter set in the design removes this gap (`summary_hist_mat.md`, "Main limits"). A forecast that starts from each case's own state carries it for 20 years. Version 2 did that, and the team agreed to test fixes and keep one only if it improved the forecast significantly.
 
@@ -164,10 +164,10 @@ No parameter set in the design removes this gap (`summary_hist_mat.md`, "Main li
 
 | Start | Oil 2028 [MMSTB] | Water 2028 | Gas 2028 | Against the adopted A2 (oil / water) |
 |---|---|---|---|---|
-| **A2: observed cumulative + rates (adopted)** | **58.74** | **85.29** | **21.34** | - |
-| A1: observed cumulative, own rates | 60.89 | 83.13 | 22.12 | +3.7 % / -2.5 % |
-| Own start (version 2 deliverable) | 61.16 | 82.85 | 22.21 | +4.1 % / -2.9 % |
-| Field reference (no model) | 54.16 | 90.01 | 19.68 | -7.8 % / +5.5 % |
+| **A2: observed cumulative + rates (adopted)** | **58.79** | **85.22** | **21.36** | - |
+| A1: observed cumulative, own rates | 60.96 | 83.04 | 22.15 | +3.7 % / -2.6 % |
+| Own start (version 2 deliverable) | 61.22 | 82.75 | 22.24 | +4.1 % / -2.9 % |
+| Field reference (no model) | 54.16 | 90.01 | 19.68 | -7.9 % / +5.6 % |
 
 Figure: `forecast_output/figs/alternative_start.png`. Tables: `hindcast_start_summary.csv`, `hindcast_start_all.csv`, `alternative_start_comparison.csv`.
 
@@ -182,6 +182,31 @@ Figure: `forecast_output/figs/alternative_start.png`. Tables: `hindcast_start_su
 7. **Start-point bias corrected (version 3).** The forecast starts from the observed 2008 rates, chosen by a blind hindcast. This halved the hindcast error on the pseudo-fields and cut it by 40 % on the real field.
 8. **Honest range.** The wider range adds the start and model uncertainty that the case bands leave out.
 
+### 6b. Physical realism of the forecast (organiser FAQ 5)
+
+FAQ 5 asks that the models "remain physically realistic". Two groups of checks run in notebook 4 (section 5 and 5b), and all pass.
+
+**The forecast curves** (all 10 cases, 80 quarters):
+
+| Check | Result |
+|---|---|
+| Cumulatives never fall | Pass |
+| Oil rate never rises (no new wells, FAQ 2) | Pass |
+| Water cut below 1 | Pass (0.872-0.876 in 2028) |
+| First-quarter rates within 10 % of the 2008 rates (no jump) | Pass |
+
+**The fitted constants** (`forecast_output/forecast_constants.csv`), fitted on the last 12 quarters of each case and of the observed field:
+
+| Constant | Meaning | Field | The 10 cases | Check |
+|---|---|---|---|---|
+| G | Liquid produced per barrel of water injected, at steady state | 1.365 | 1.342-1.366 | Pass: inside its fitting range (0.2-5) and within 2 % of the field. G above 1 means that the aquifer supports the pressure as well as the injection |
+| G x injection | The liquid rate after 2008 | 12,728 STB/d (observed 2008: 13,029) | 12,519-12,741 STB/d | Pass: within 4 % of the observed 2008 rate, so no jump |
+| tau | How fast the liquid rate follows injection | 5 days | 5 days | Reported, not tested. It sits at the lower bound of the fit in every case and in the field. With quarterly data, liquid / injection is 1.32-1.40 in every quarter of 2005-2008: the response is faster than one quarter, so tau cannot be resolved below that. With constant injection the forecast does not depend on it |
+| WOR slope | How fast ln(water-oil ratio) rises with cumulative oil | 0.130 per MMSTB | 0.074-0.078 | Pass: positive (the water cut rises). **But the cases' slope is only 57-60 % of the field's** |
+
+- **G and aquifer size.** Over the 10 cases, G rises with the aquifer volume (Spearman +0.50), as it should, but the range of G is narrow because all 10 match the same liquid history.
+- **The WOR slope is the known gap, now measured.** The field's water rises with cumulative oil about 1.7 times faster than in any matched case. This is the late water rise that no simulated case reproduces (`summary_hist_mat.md`, limitation 1). A2 fixes the level in 2008, but the forecast then follows the cases' slower water rise. So the 10 cases probably sit on the high-oil, low-water side, and the field reference (oil 54.2, water 90.0 MMSTB) marks the other side of the wider range. This is why the wider range should be presented.
+
 **Considered but not changed.**
 - **A model-error term in the history match.** Notebook 3 already samples the noise level of the misfit (`log_sigma`) with AR(1) correlation, so the misfit the simulator cannot explain is already absorbed into the noise. A structured model-error term would widen the posterior, but it would not move the forecast. The wider range covers the same need more directly.
 - **Rates in the history-match score.** No parameter set fits both the 2008 totals and the 2008 rates, so this would only trade one fit for the other.
@@ -191,7 +216,7 @@ Figure: `forecast_output/figs/alternative_start.png`. Tables: `hindcast_start_su
 1. **Horizon.** The backtest and the hindcast cover at most 12 quarters; the forecast covers 80. They are evidence for the method and the start, not proof of 20-year accuracy.
 2. **Operating assumptions.** Water injection is constant at 9,327 STB/d after 2008; no new wells; no change of operating conditions. A change in injection changes the CRM liquid rate directly.
 3. **Injection in the simulated cases.** The backtest on the simulated cases uses the field's injection record, assuming the cases follow the field's injection schedule. The cases' files do not report injection.
-4. **The model family does not reproduce the field's late behaviour.** Anchoring the start fixes the level in 2008, but the decline shape and WOR slope still come from the cases. If the simulator under-states how fast water rises, the forecast may still be high on oil later on. The field reference (54.2 MMSTB of oil) marks that side of the wider range.
+4. **The model family does not reproduce the field's late behaviour.** Anchoring the start fixes the level in 2008, but the decline shape and WOR slope still come from the cases. The cases' WOR slope is only 57-60 % of the field's (section 6b), so the forecast is probably high on oil and low on water later on. The field reference (54.2 MMSTB of oil) marks that side of the wider range.
 5. **The 10 sheets differ only in shape,** because they share the same start. Their spread (about 1 %) is not the forecast uncertainty; see the wider range.
 6. **New sets.** Their 1998-2008 curves come from the proxy. Their quarterly rates carry the proxy's noise (about ±5 % between quarters), which the 12-quarter fit smooths.
 7. **What the organisers score against is not known.** If they score against a continuation of this simulator, the own-start forecast would be the consistent one. In the hindcast, however, A2 was also better on the in-family pseudo-fields, so it is the better choice either way.

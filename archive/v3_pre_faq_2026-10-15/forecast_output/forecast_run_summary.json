@@ -1,0 +1,159 @@
+{
+  "final_method": "crm_wor (n=12, WOR last)",
+  "ensemble": false,
+  "injection_after_2008": 9326.61,
+  "start": "A2",
+  "start_hindcast": [
+    {
+      "option": "A2",
+      "pseudo_med_abs_oil": 3.0044,
+      "pseudo_med_abs_water": 2.8372,
+      "pseudo_mean_abs": 3.5219,
+      "field_2005-01-01": 5.1875,
+      "field_2006-01-01": 3.5525,
+      "field_2007-01-01": 2.661,
+      "field_mean_abs": 3.8003,
+      "pseudo_share_better_than_main_%": 83.0,
+      "pseudo_wilcoxon_p_vs_main": 0.0
+    },
+    {
+      "option": "fade_730",
+      "pseudo_med_abs_oil": 2.9844,
+      "pseudo_med_abs_water": 2.8275,
+      "pseudo_mean_abs": 3.6502,
+      "field_2005-01-01": 4.2522,
+      "field_2006-01-01": 3.8601,
+      "field_2007-01-01": 4.2498,
+      "field_mean_abs": 4.1207,
+      "pseudo_share_better_than_main_%": 82.3333,
+      "pseudo_wilcoxon_p_vs_main": 0.0
+    },
+    {
+      "option": "fade_365",
+      "pseudo_med_abs_oil": 3.0274,
+      "pseudo_med_abs_water": 2.8705,
+      "pseudo_mean_abs": 3.7237,
+      "field_2005-01-01": 3.8731,
+      "field_2006-01-01": 4.2149,
+      "field_2007-01-01": 5.4062,
+      "field_mean_abs": 4.4981,
+      "pseudo_share_better_than_main_%": 82.0,
+      "pseudo_wilcoxon_p_vs_main": 0.0
+    },
+    {
+      "option": "A1",
+      "pseudo_med_abs_oil": 3.4731,
+      "pseudo_med_abs_water": 2.8986,
+      "pseudo_mean_abs": 3.9587,
+      "field_2005-01-01": 3.3179,
+      "field_2006-01-01": 4.9537,
+      "field_2007-01-01": 10.1071,
+      "field_mean_abs": 6.1262,
+      "pseudo_share_better_than_main_%": 82.6667,
+      "pseudo_wilcoxon_p_vs_main": 0.0
+    },
+    {
+      "option": "main",
+      "pseudo_med_abs_oil": 6.9761,
+      "pseudo_med_abs_water": 3.5921,
+      "pseudo_mean_abs": 7.4727,
+      "field_2005-01-01": 2.4834,
+      "field_2006-01-01": 4.0306,
+      "field_2007-01-01": 13.0981,
+      "field_mean_abs": 6.5374,
+      "pseudo_share_better_than_main_%": NaN,
+      "pseudo_wilcoxon_p_vs_main": NaN
+    }
+  ],
+  "backtest_best": [
+    {
+      "method": "crm_wor",
+      "window": 12,
+      "wor_anchor": "last",
+      "oil": 2.8043,
+      "water": 3.0786,
+      "bias_oil": -1.8921,
+      "bias_water": -2.0916,
+      "field_oil": 2.5972,
+      "field_water": 5.3058,
+      "score": 2.9414,
+      "field_score": 3.9515
+    },
+    {
+      "method": "arps_wor",
+      "window": 12,
+      "wor_anchor": "last",
+      "oil": 4.6716,
+      "water": 4.2607,
+      "bias_oil": -3.0427,
+      "bias_water": -4.0785,
+      "field_oil": 2.5269,
+      "field_water": 7.2851,
+      "score": 4.4662,
+      "field_score": 4.906
+    },
+    {
+      "method": "liq_wor",
+      "window": 16,
+      "wor_anchor": "fit",
+      "oil": 4.853,
+      "water": 6.0212,
+      "bias_oil": -4.1543,
+      "bias_water": -2.3356,
+      "field_oil": 4.1397,
+      "field_water": 8.0498,
+      "score": 5.4371,
+      "field_score": 6.0947
+    },
+    {
+      "method": "elton",
+      "window": 0,
+      "wor_anchor": "-",
+      "oil": 62.297,
+      "water": 66.0619,
+      "bias_oil": 62.297,
+      "bias_water": -66.0619,
+      "field_oil": 61.7981,
+      "field_water": 70.2064,
+      "score": 64.1794,
+      "field_score": 66.0023
+    }
+  ],
+  "checks": {
+    "cumulatives never decrease": true,
+    "oil rate never increases (no new wells)": true,
+    "water cut below 1": true,
+    "all values finite and positive": true,
+    "first-quarter rates within 10 % of the 2008 start rates": true
+  },
+  "oil_2028_MM": {
+    "P10": 58.48457098072912,
+    "mean": 58.736105225009695,
+    "P90": 59.0012499661344
+  },
+  "water_2028_MM": {
+    "P10": 85.17032943933248,
+    "mean": 85.28706279793319,
+    "P90": 85.38531340261332
+  },
+  "oil_2028_MM_own_start": 61.15453919396876,
+  "wider_range_2028_MM": {
+    "oil": [
+      54.162981697887496,
+      61.70962626882899
+    ],
+    "water": [
+      82.46195303968612,
+      90.00858754328267
+    ],
+    "gas": [
+      19.67669914130126,
+      22.419102815674474
+    ]
+  },
+  "field_reference_2028_MM": {
+    "oil": 54.162981697887496,
+    "water": 90.00858754328267
+  },
+  "deliverable": "forecast_output\\10_Final_deliverables.xlsx"
+}

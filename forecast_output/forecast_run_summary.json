@@ -126,24 +126,132 @@
     "all values finite and positive": true,
     "first-quarter rates within 10 % of the 2008 start rates": true
   },
+  "realism_checks": {
+    "G inside its fitting range (not forced to a bound)": true,
+    "G of every case within 10 % of the observed field's G": true,
+    "liquid target after 2008 within 10 % of the observed 2008 liquid rate": true,
+    "WOR slope positive (water cut rises)": true
+  },
+  "constants": [
+    {
+      "case": "Observed field",
+      "aquifer_pv": NaN,
+      "tau_days": 5.0,
+      "G": 1.3647,
+      "wor_slope_per_MMSTB": 0.1295,
+      "liquid_rate_2008": 13029.0643,
+      "liquid_target_after_2008": 12727.909
+    },
+    {
+      "case": "Case 1: new set",
+      "aquifer_pv": 172.6303,
+      "tau_days": 5.0196,
+      "G": 1.3661,
+      "wor_slope_per_MMSTB": 0.0767,
+      "liquid_rate_2008": 13025.9857,
+      "liquid_target_after_2008": 12740.883
+    },
+    {
+      "case": "Case 2: new set",
+      "aquifer_pv": 168.4691,
+      "tau_days": 5.0,
+      "G": 1.366,
+      "wor_slope_per_MMSTB": 0.0766,
+      "liquid_rate_2008": 12994.3671,
+      "liquid_target_after_2008": 12739.7568
+    },
+    {
+      "case": "Case 3: sim 6",
+      "aquifer_pv": 119.7653,
+      "tau_days": 5.0098,
+      "G": 1.3619,
+      "wor_slope_per_MMSTB": 0.0767,
+      "liquid_rate_2008": 12955.0543,
+      "liquid_target_after_2008": 12701.6224
+    },
+    {
+      "case": "Case 4: new set",
+      "aquifer_pv": 164.8367,
+      "tau_days": 5.0,
+      "G": 1.3618,
+      "wor_slope_per_MMSTB": 0.0776,
+      "liquid_rate_2008": 12974.508,
+      "liquid_target_after_2008": 12701.1127
+    },
+    {
+      "case": "Case 5: new set",
+      "aquifer_pv": 177.2117,
+      "tau_days": 5.0,
+      "G": 1.366,
+      "wor_slope_per_MMSTB": 0.0767,
+      "liquid_rate_2008": 12991.057,
+      "liquid_target_after_2008": 12740.4188
+    },
+    {
+      "case": "Case 6: sim 97",
+      "aquifer_pv": 153.8859,
+      "tau_days": 5.0041,
+      "G": 1.3647,
+      "wor_slope_per_MMSTB": 0.0747,
+      "liquid_rate_2008": 13029.0543,
+      "liquid_target_after_2008": 12727.9081
+    },
+    {
+      "case": "Case 7: sim 76",
+      "aquifer_pv": 182.2022,
+      "tau_days": 5.0046,
+      "G": 1.3644,
+      "wor_slope_per_MMSTB": 0.075,
+      "liquid_rate_2008": 13000.9565,
+      "liquid_target_after_2008": 12725.5537
+    },
+    {
+      "case": "Case 8: sim 11",
+      "aquifer_pv": 188.0822,
+      "tau_days": 5.0,
+      "G": 1.3647,
+      "wor_slope_per_MMSTB": 0.074,
+      "liquid_rate_2008": 13029.1087,
+      "liquid_target_after_2008": 12727.9102
+    },
+    {
+      "case": "Case 9: sim 40",
+      "aquifer_pv": 132.5222,
+      "tau_days": 5.0034,
+      "G": 1.3647,
+      "wor_slope_per_MMSTB": 0.0743,
+      "liquid_rate_2008": 13029.087,
+      "liquid_target_after_2008": 12727.9103
+    },
+    {
+      "case": "Case 10: sim 73",
+      "aquifer_pv": 93.3152,
+      "tau_days": 5.0,
+      "G": 1.3423,
+      "wor_slope_per_MMSTB": 0.0768,
+      "liquid_rate_2008": 12787.5,
+      "liquid_target_after_2008": 12519.0099
+    }
+  ],
+  "spearman_G_aquifer": 0.5030303030303029,
   "oil_2028_MM": {
-    "P10": 58.48457098072912,
-    "mean": 58.736105225009695,
+    "P10": 58.57938624564998,
+    "mean": 58.78746460947438,
     "P90": 59.0012499661344
   },
   "water_2028_MM": {
-    "P10": 85.17032943933248,
-    "mean": 85.28706279793319,
-    "P90": 85.38531340261332
+    "P10": 85.04150144456436,
+    "mean": 85.21838836944367,
+    "P90": 85.5311608984708
   },
-  "oil_2028_MM_own_start": 61.15453919396876,
+  "oil_2028_MM_own_start": 61.22240472051923,
   "wider_range_2028_MM": {
     "oil": [
       54.162981697887496,
       61.70962626882899
     ],
     "water": [
-      82.46195303968612,
+      81.82940490174423,
       90.00858754328267
     ],
     "gas": [

@@ -6,6 +6,7 @@ Each subfolder is a **frozen copy** of the full pipeline at one moment, taken ju
 |---|---|---|---|
 | `v1_baseline_2026-10-15/` | 15 Oct 2026 | **The proxy improvement.** This is version 1, which uses Elton's cumulative proxy as is. It was replaced by the improved proxy (version 2) | Notebooks 2 and 3, `src/proxy_lib.py`, `proxy_output/`, `hist_match_input/`, `hist_match_output/`, the history-matching summary and the notebook builders. There was no forecast yet |
 | `v2_pre_bias_fix_2026-10-15/` | 15 Oct 2026 | **The forecast start-point fix.** This is version 2, where each case's forecast starts from its own 2008 values. It was replaced by version 3, which starts from the observed 2008 values | Notebooks 2, 3 and 4, `src/` (proxy and forecast code), all four output folders including the version 2 deliverable, both summaries, the action plan and the builders |
+| `v3_pre_faq_2026-10-15/` | 15 Oct 2026 | **The FAQ alignment.** This is version 3, where the 10 were one per k-means cluster (diversity first). It was replaced by version 4, which chooses the 10 by match quality first (organiser FAQ 9) and adds physical checks | Notebooks 2, 3 and 4, `src/`, all four output folders including the version 3 deliverable, the summaries, `methodology_explained.md`, the root README (`README_root.md`), the action plan and the builders |
 
 Each subfolder's `README.md` lists the settings and key results of that version (for example its chosen 10, posterior and forecast numbers) and gives a copy-paste **revert command** (PowerShell, run from the repo root).
 
@@ -15,11 +16,13 @@ Each subfolder's `README.md` lists the settings and key results of that version 
 |---|---|---|---|---|
 | v1 (archived) | Elton's cumulative twin, 5 seeds | 5 new sets + cases 6, 76, 11, 40, 73 | - (no forecast yet) | - |
 | v2 (archived) | Improved, 20 seeds | Case 6, 5 new sets, cases 97, 76, 11, 40 | Each case's own 2008 values | 61.2 MMSTB |
-| **v3 (current, repo root)** | Improved, 20 seeds | Same as v2 | Observed 2008 values | **58.7 MMSTB** |
+| v3 (archived) | Improved, 20 seeds | Same as v2 (one per k-means cluster) | Observed 2008 values | 58.7 MMSTB |
+| **v4 (current, repo root)** | Improved, 20 seeds | **Quality first:** 4 new sets + cases 6, 97, 76, 11, 40, 73 | Observed 2008 values | **58.8 MMSTB** |
 
 Why each change was made, and the evidence for it:
 - **Proxy:** `summary_hist_mat.md`, section 7.
 - **Forecast start:** `summary_forecast.md`, section 5.
+- **Choice of the 10 (FAQ):** `summary_hist_mat.md`, section 8.
 
 ## Notes
 

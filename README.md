@@ -34,12 +34,13 @@
 - **Proxy.** It is based on Elton's MLP (4 parameters + 8 grid features) and was improved: trained on oil and water only, tuned, and with 20 seeds.
   - Test error is 0.064 % of the final observed oil and 0.142 % of water.
   - That is 20-40 % lower than the original (significant, p ~ 1e-9).
-- **History matching** uses Bayesian MCMC on the proxy and a hybrid choice of 10. All 8 checks pass.
+- **History matching** uses Bayesian MCMC on the proxy. The 10 are chosen by match quality first, as the organiser's FAQ asks. All 13 checks pass.
   - The history pins down porosity well (multiplier 1.34-1.38).
-  - **The 10:** simulated cases 6, 97, 76, 11 and 40, plus 5 new parameter sets.
+  - **The 10:** simulated cases 6, 97, 76, 11, 40 and 73, plus 4 new parameter sets. All 10 are within the proxy error of the best match.
 - **Forecast** uses a capacitance-resistance model plus the water-oil-ratio trend, chosen by a backtest (2.9 % error). Each forecast starts from the observed 2008 values, chosen by a blind hindcast.
   - **Oil in 2028:** 58.7 MMSTB (38.4 in 2008).
   - **Wider range** (start-point and model uncertainty): 54.2-61.7 MMSTB.
+  - **Physical checks** of the forecast pass (organiser FAQ 5). One gap is measured: the field's water-oil ratio rises about 1.7 times faster than in the matched cases.
 - **Main limitation.** The simulator family cannot reproduce the field's late water rise. See the summaries.
 
 The full write-ups are **`summary_hist_mat.md`** (proxy and history matching) and **`summary_forecast.md`** (forecast).
@@ -50,7 +51,8 @@ The full write-ups are **`summary_hist_mat.md`** (proxy and history matching) an
 |---|---|---|---|
 | v1 | Elton's proxy as is, plus the history match | - | `archive/v1_baseline_2026-10-15/` |
 | v2 | Improved proxy (water error -41 % on the test cases), plus the forecast | `improve_proxy/` | `archive/v2_pre_bias_fix_2026-10-15/` |
-| **v3 (current)** | The forecast starts from the observed 2008 values | `improve_forecast/` | - |
+| v3 | The forecast starts from the observed 2008 values | `improve_forecast/` | `archive/v3_pre_faq_2026-10-15/` |
+| **v4 (current)** | Aligned with the organiser's FAQ: the 10 chosen by match quality first; physical checks added | `summary_hist_mat.md`, section 8 | - |
 
 ## Files and folders
 
@@ -65,6 +67,7 @@ The full write-ups are **`summary_hist_mat.md`** (proxy and history matching) an
 | `notebook4_forecast.ipynb` | Forecast to 2028: backtest of the methods, start-point hindcast, uncertainty, the deliverable |
 | `summary_hist_mat.md` | Findings of the proxy and the history matching, including the proxy improvement tests (section 7) |
 | `summary_forecast.md` | Forecast methods, evidence, results, limitations and sources |
+| `faq.md` | The organiser's FAQ. How the pipeline follows it: `summary_hist_mat.md`, section 8 |
 | `methodology_explained.md` | The methods and ideas of notebooks 2-4 in simple terms, with a glossary. Read this first if you are new to them |
 
 **Data, code and outputs**
@@ -88,7 +91,7 @@ Each of these folders has its own `README.md`.
 | `instruction/` | The competition brief: `instruction1.md` (files and submission requirements) and `instruction2_briefing_slides.md` (briefing slides) |
 | `reference/` | The organisers' reference paper (Zhang et al. 2023, SPE Journal: Bayesian history matching with an LSTM proxy), as a PDF and as a text copy |
 | `our_work/` | Each member's original work: Elton's and Si Jie's proxy models, and Yi Siang's and Zi Yang's history-matching notebooks. See its README |
-| `archive/` | Frozen restore points of earlier versions (v1, v2), each with a revert command. See its README |
+| `archive/` | Frozen restore points of earlier versions (v1, v2, v3), each with a revert command. See its README |
 
 **Improvement studies (the evidence behind the current version)**
 
