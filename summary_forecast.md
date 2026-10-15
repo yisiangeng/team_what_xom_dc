@@ -160,7 +160,7 @@ No parameter set in the design removes this gap (`summary_hist_mat.md`, "Main li
   - The simulator's dynamics therefore over-produce oil and under-produce water compared with the real field, and the gap grows with time.
 - **Limit.** There are only 3 field cut-offs, so the field result alone cannot be tested statistically. The decision rests on the pseudo-fields, where the result is significant, and on the field agreeing.
 
-**Effect on the 2028 forecast** (mean of the 10; `alternative_start_comparison.csv`):
+**Effect on the 2028 forecast** (mean of the 10; `forecast_details.xlsx`, sheet `alternative_start_comparison`):
 
 | Start | Oil 2028 [MMSTB] | Water 2028 | Gas 2028 | Against the adopted A2 (oil / water) |
 |---|---|---|---|---|
@@ -169,7 +169,7 @@ No parameter set in the design removes this gap (`summary_hist_mat.md`, "Main li
 | Own start (version 2 deliverable) | 61.22 | 82.75 | 22.24 | +4.1 % / -2.9 % |
 | Field reference (no model) | 54.16 | 90.01 | 19.68 | -7.9 % / +5.6 % |
 
-Figure: `forecast_output/figs/alternative_start.png`. Tables: `hindcast_start_summary.csv`, `hindcast_start_all.csv`, `alternative_start_comparison.csv`.
+Figure: `forecast_output/figs/alternative_start.png`. Tables: `forecast_output/forecast_details.xlsx`, sheets `hindcast_start_summary`, `hindcast_start_all` and `alternative_start_comparison`.
 
 ## 6. What was done to improve accuracy
 
@@ -195,7 +195,7 @@ FAQ 5 asks that the models "remain physically realistic". Two groups of checks r
 | Water cut below 1 | Pass (0.872-0.876 in 2028) |
 | First-quarter rates within 10 % of the 2008 rates (no jump) | Pass |
 
-**The fitted constants** (`forecast_output/forecast_constants.csv`), fitted on the last 12 quarters of each case and of the observed field:
+**The fitted constants** (`forecast_output/forecast_by_case.csv`), fitted on the last 12 quarters of each case and of the observed field:
 
 | Constant | Meaning | Field | The 10 cases | Check |
 |---|---|---|---|---|
@@ -243,10 +243,8 @@ FAQ 5 asks that the models "remain physically realistic". Two groups of checks r
 | `forecast_output/10_Final_deliverables.xlsx` | **The deliverable**: the 09 template, Case 1-10, 80 quarters of gas, oil and water cumulative (start: observed 2008 values) |
 | `forecast_output/forecast_cases_long.csv` | History and forecast of every case and of the observed field: date, phase, cumulative, rate (for Power BI). Includes the own-start sensitivity as period `forecast, own start (sensitivity)` |
 | `forecast_output/forecast_bands.csv` | P10 / P50 / P90 by date: the 10 cases, the posterior, the own-start sensitivity, the field reference, and the wider range (min / median / max) |
-| `forecast_output/forecast_summary_by_case.csv` | 2008 and 2028 values per case |
-| `forecast_output/backtest_all_settings.csv`, `backtest_best_per_method.csv` | All backtest runs and the best setting per method |
-| `forecast_output/hindcast_start_all.csv`, `hindcast_start_summary.csv` | The start-point hindcast: every truth × cut-off × start, and the summary with the tests |
-| `forecast_output/alternative_start_comparison.csv` | The adopted forecast against the other starts |
+| `forecast_output/forecast_by_case.csv` | 2008 and 2028 values per case, and the fitted constants (tau, G, WOR slope) of each case and of the field |
+| `forecast_output/forecast_details.xlsx` | Supporting tables, one sheet each: all backtest runs, the best setting per method, the start-point hindcast (every truth × cut-off × start, and the summary with the tests), the adopted forecast against the other starts |
 | `forecast_output/forecast_run_summary.json` | Key numbers of the run |
 | `forecast_output/figs/` | `backtest.png`, `forecast_fan.png`, `alternative_start.png` |
 | `improve_forecast/` | The full hindcast with diagnostics (simulator continuation, cumulative errors, coverage) |
