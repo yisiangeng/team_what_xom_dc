@@ -1,0 +1,204 @@
+{
+  "proxy": {
+    "sha256": "db67d596a5f10f51334e6ffa6cc660804f27a17ee66d2213f0bca68a52a60e0b",
+    "config": {
+      "feature_set": "p4g8",
+      "hidden": [
+        128,
+        128
+      ],
+      "detail": {
+        "name": "V0 baseline",
+        "family": "mlp",
+        "target": "full",
+        "output": "residual",
+        "feature_set": "p4g8",
+        "hidden": [
+          128,
+          128
+        ],
+        "dropout": 0.05,
+        "lr": 0.001,
+        "weight_decay": 0.0001,
+        "batch_size": 0,
+        "max_epochs": 3000,
+        "patience": 300,
+        "n_seeds": 5,
+        "gp_n_pc": 8
+      }
+    },
+    "sigma_proxy": {
+      "oil_cum": 0.0008896475093763164,
+      "gas_cum": 0.0008594124735876752,
+      "water_cum": 0.0028347540329890157
+    }
+  },
+  "window": [
+    "1999-01-01",
+    "2008-01-01",
+    37
+  ],
+  "rho": 0.7993639904847434,
+  "best_simulated": {
+    "case_id": 6,
+    "score": 0.004939243791492652
+  },
+  "median_simulated_score": 0.06575885839518288,
+  "simulated_not_ruled_out": 8,
+  "mcmc": {
+    "acceptance": 0.45858984375,
+    "max_rhat": 1.0195789797810078,
+    "max_tau": 100.25143370289342,
+    "ess": 3830.3691609840503,
+    "posterior_mean_score": 0.005470164289513002,
+    "map_score": 0.005426751775134035
+  },
+  "direct_sampling": {
+    "ess": 1507.7022862959918,
+    "agree": true
+  },
+  "nroy_share": 0.075035,
+  "global_search_best_score": 0.004666000672734051,
+  "eps": 0.0021008692389683577,
+  "top10": [
+    {
+      "cand_id": "set_2395",
+      "rank": 1,
+      "source": "new_set",
+      "case_id": NaN,
+      "score": 0.004772675301968581,
+      "I_max": 1.8358774452656796,
+      "fault_trans": 0.10275345156334402,
+      "poro_mult": 1.3672586138850111,
+      "perm_mult": 3.9170778452644157,
+      "aquifer_pv": 196.39442898954078
+    },
+    {
+      "cand_id": "set_1290",
+      "rank": 2,
+      "source": "new_set",
+      "case_id": NaN,
+      "score": 0.004843312954915686,
+      "I_max": 1.6783496829328624,
+      "fault_trans": 0.08171482728070024,
+      "poro_mult": 1.369065977473211,
+      "perm_mult": 3.239954459934805,
+      "aquifer_pv": 196.55709557582654
+    },
+    {
+      "cand_id": "set_3893",
+      "rank": 3,
+      "source": "new_set",
+      "case_id": NaN,
+      "score": 0.004888925224747868,
+      "I_max": 1.9528784985558678,
+      "fault_trans": 0.14387009335368234,
+      "poro_mult": 1.3727683569185911,
+      "perm_mult": 2.4107545323970805,
+      "aquifer_pv": 182.99742474104636
+    },
+    {
+      "cand_id": "set_1772",
+      "rank": 4,
+      "source": "new_set",
+      "case_id": NaN,
+      "score": 0.004907489955303284,
+      "I_max": 1.8118736820602583,
+      "fault_trans": 0.09121340571911654,
+      "poro_mult": 1.3476196422211273,
+      "perm_mult": 6.890921103124624,
+      "aquifer_pv": 159.40474211545563
+    },
+    {
+      "cand_id": "case_6",
+      "rank": 5,
+      "source": "simulated",
+      "case_id": 6.0,
+      "score": 0.004939243791492652,
+      "I_max": 2.1643119019446355,
+      "fault_trans": 0.0576906643879513,
+      "poro_mult": 1.35843836787011,
+      "perm_mult": 2.46845149082919,
+      "aquifer_pv": 119.76531266213
+    },
+    {
+      "cand_id": "set_1689",
+      "rank": 6,
+      "source": "new_set",
+      "case_id": NaN,
+      "score": 0.004953132549056586,
+      "I_max": 1.8809548023876734,
+      "fault_trans": 0.08952217477463337,
+      "poro_mult": 1.3672854547817748,
+      "perm_mult": 2.875219552187965,
+      "aquifer_pv": 168.29322011788662
+    },
+    {
+      "cand_id": "case_97",
+      "rank": 7,
+      "source": "simulated",
+      "case_id": 97.0,
+      "score": 0.005218415928884011,
+      "I_max": 1.8649307108583326,
+      "fault_trans": 0.0519202246162297,
+      "poro_mult": 1.3461753186641,
+      "perm_mult": 5.40850245674001,
+      "aquifer_pv": 153.885921811579
+    },
+    {
+      "cand_id": "case_76",
+      "rank": 8,
+      "source": "simulated",
+      "case_id": 76.0,
+      "score": 0.005279506119793367,
+      "I_max": 2.597893341782663,
+      "fault_trans": 0.107852921129999,
+      "poro_mult": 1.38330698568682,
+      "perm_mult": 1.64047161269977,
+      "aquifer_pv": 182.202215643788
+    },
+    {
+      "cand_id": "case_11",
+      "rank": 9,
+      "source": "simulated",
+      "case_id": 11.0,
+      "score": 0.005326940634496878,
+      "I_max": 2.634516111300128,
+      "fault_trans": 0.124999847407453,
+      "poro_mult": 1.35378337961974,
+      "perm_mult": 7.33772698141423,
+      "aquifer_pv": 188.082216864528
+    },
+    {
+      "cand_id": "case_40",
+      "rank": 10,
+      "source": "simulated",
+      "case_id": 40.0,
+      "score": 0.005370470082557866,
+      "I_max": 2.648063336504116,
+      "fault_trans": 0.144336985381634,
+      "poro_mult": 1.354257637257,
+      "perm_mult": 4.96132084109012,
+      "aquifer_pv": 132.522202215644
+    }
+  ],
+  "selection_note": "",
+  "checks": {
+    "MCMC converged on the real history (max R-hat < 1.1)": true,
+    "Direct sampling agrees with the MCMC": true,
+    "Recovery: porosity recovered within 2 % on average": true,
+    "Recovery: true values inside the 5-95 % interval in >= 80 % of parameter-runs": true,
+    "Recovery: chosen 10 fit the clean fake history within 1.5x the pool's best 10": true,
+    "Recovery runs converged (max R-hat < 1.1 in every run)": true,
+    "All 10 chosen are not ruled out (I_max <= 3)": true,
+    "All 10 chosen inside the train range": true
+  },
+  "holdout": {
+    "early_end_date": "2005-04-01",
+    "late_mean_chosen_on_early_%": 1.0718071402803773,
+    "late_mean_pool_median_%": 10.17448485759459,
+    "late_mean_oracle_%": 1.0522188897416156,
+    "overlap_with_oracle": 9.0,
+    "spearman_early_vs_late": 0.9927272727272727
+  }
+}

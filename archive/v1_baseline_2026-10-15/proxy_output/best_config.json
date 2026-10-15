@@ -1,0 +1,13 @@
+{
+  "feature_set": "p4g8",
+  "use_log": false,
+  "hidden": [
+    128,
+    128
+  ],
+  "dropout": 0.05,
+  "lr": 0.001,
+  "weight_decay": 0.0001,
+  "max_epochs": 3000,
+  "patience": 300
+}

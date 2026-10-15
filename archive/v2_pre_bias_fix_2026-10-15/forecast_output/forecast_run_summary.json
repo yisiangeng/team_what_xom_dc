@@ -1,0 +1,75 @@
+{
+  "final_method": "crm_wor (n=12, WOR last)",
+  "ensemble": false,
+  "injection_after_2008": 9326.61,
+  "backtest_best": [
+    {
+      "method": "crm_wor",
+      "window": 12,
+      "wor_anchor": "last",
+      "oil": 2.8043,
+      "water": 3.0786,
+      "bias_oil": -1.8921,
+      "bias_water": -2.0916,
+      "field_oil": 2.5972,
+      "field_water": 5.3058,
+      "score": 2.9414,
+      "field_score": 3.9515
+    },
+    {
+      "method": "arps_wor",
+      "window": 12,
+      "wor_anchor": "last",
+      "oil": 4.6716,
+      "water": 4.2607,
+      "bias_oil": -3.0427,
+      "bias_water": -4.0785,
+      "field_oil": 2.5269,
+      "field_water": 7.2851,
+      "score": 4.4662,
+      "field_score": 4.906
+    },
+    {
+      "method": "liq_wor",
+      "window": 16,
+      "wor_anchor": "fit",
+      "oil": 4.853,
+      "water": 6.0212,
+      "bias_oil": -4.1543,
+      "bias_water": -2.3356,
+      "field_oil": 4.1397,
+      "field_water": 8.0498,
+      "score": 5.4371,
+      "field_score": 6.0947
+    },
+    {
+      "method": "elton",
+      "window": 0,
+      "wor_anchor": "-",
+      "oil": 62.297,
+      "water": 66.0619,
+      "bias_oil": 62.297,
+      "bias_water": -66.0619,
+      "field_oil": 61.7981,
+      "field_water": 70.2064,
+      "score": 64.1794,
+      "field_score": 66.0023
+    }
+  ],
+  "checks": {
+    "cumulatives never decrease": true,
+    "oil rate never increases (no new wells)": true,
+    "water cut below 1": true,
+    "all values finite and positive": true
+  },
+  "oil_2028_MM": {
+    "P10": 60.7042959809583,
+    "mean": 61.15453919396876,
+    "P90": 61.68791983861608
+  },
+  "field_reference_2028_MM": {
+    "oil": 54.162981697887496,
+    "water": 90.00858754328267
+  },
+  "deliverable": "forecast_output\\10_Final_deliverables.xlsx"
+}

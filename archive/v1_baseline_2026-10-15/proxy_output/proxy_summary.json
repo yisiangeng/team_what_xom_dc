@@ -1,0 +1,66 @@
+{
+  "best_config": {
+    "feature_set": "p4g8",
+    "use_log": false,
+    "hidden": [
+      128,
+      128
+    ],
+    "dropout": 0.05,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "max_epochs": 3000,
+    "patience": 300
+  },
+  "same_config_as_elton": true,
+  "rate_proxy_rmse_pooled": {
+    "train": 28.27,
+    "validation": 32.72,
+    "test": 32.47
+  },
+  "rate_ridge_rmse_pooled": {
+    "train": 110.95,
+    "validation": 127.59,
+    "test": 135.85
+  },
+  "epochs_rate": 2255,
+  "epochs_cumulative": 743,
+  "cumulative_gate_pass": true,
+  "hm_units_rms_%": {
+    "train": {
+      "rms_oil_%": 0.0665,
+      "max_oil_%": 0.3484,
+      "rms_gas_%": 0.0645,
+      "max_gas_%": 0.3669,
+      "rms_water_%": 0.2293,
+      "max_water_%": 1.685
+    },
+    "validation": {
+      "rms_oil_%": 0.0753,
+      "max_oil_%": 0.2329,
+      "rms_gas_%": 0.0708,
+      "max_gas_%": 0.2044,
+      "rms_water_%": 0.197,
+      "max_water_%": 0.7801
+    },
+    "test": {
+      "rms_oil_%": 0.0711,
+      "max_oil_%": 0.3026,
+      "rms_gas_%": 0.067,
+      "max_gas_%": 0.2729,
+      "rms_water_%": 0.2395,
+      "max_water_%": 0.8807
+    }
+  },
+  "sigma_proxy": {
+    "oil_cum": 0.0007527740539192229,
+    "gas_cum": 0.0007075760220818746,
+    "water_cum": 0.0019697818533046378
+  },
+  "score_spearman": {
+    "train": 0.9988,
+    "validation": 1.0,
+    "test": 1.0
+  },
+  "grid_mapper": "fallback"
+}

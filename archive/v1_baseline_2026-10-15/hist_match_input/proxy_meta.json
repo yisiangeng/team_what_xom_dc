@@ -1,0 +1,62 @@
+{
+  "model_file": "cumulative_model.pt",
+  "model_sha256": "d8fc2890d7ea2d9cb485dbfbbfcd8a9844512b3ef106b09a28df779bd931326b",
+  "made_by": "notebook2_proxy_model.ipynb",
+  "created": "2026-10-15 00:53",
+  "target": "cumulative production, real units (STB oil and water, MSCF gas)",
+  "phase_order_in_model": [
+    "oil",
+    "gas",
+    "water"
+  ],
+  "config": {
+    "feature_set": "p4g8",
+    "use_log": false,
+    "hidden": [
+      128,
+      128
+    ],
+    "dropout": 0.05,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "max_epochs": 3000,
+    "patience": 300
+  },
+  "epochs": 743,
+  "n_seeds": 5,
+  "grid_mapper": "fallback",
+  "train_min": {
+    "fault_trans": 0.0507904293954283,
+    "poro_mult": 0.801219112725201,
+    "perm_mult": 0.537516403698843,
+    "aquifer_pv": 53.9529099398785
+  },
+  "train_max": {
+    "fault_trans": 0.149950356557919,
+    "poro_mult": 1.49402691732536,
+    "perm_mult": 9.50196539201025,
+    "aquifer_pv": 199.83520004883
+  },
+  "window": {
+    "start": "1999-01-01",
+    "end": "2008-01-01",
+    "n_dates": 37
+  },
+  "observed_final": {
+    "oil_cum": 38378316.9705693,
+    "gas_cum": 13942537.324,
+    "water_cum": 12814432.2830691
+  },
+  "sigma_proxy": {
+    "oil_cum": 0.0007527740539192229,
+    "gas_cum": 0.0007075760220818746,
+    "water_cum": 0.0019697818533046378
+  },
+  "sigma_proxy_test": {
+    "oil_cum": 0.0007113010496835586,
+    "gas_cum": 0.0006697345214209076,
+    "water_cum": 0.0023953617048648856
+  },
+  "sigma_proxy_note": "RMS of (proxy - simulator) / observed final cumulative, window dates, validation cases 71-85",
+  "rate_proxy_test_rmse_pooled": 32.47287807377501
+}

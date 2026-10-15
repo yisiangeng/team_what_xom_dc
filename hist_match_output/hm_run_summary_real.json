@@ -1,0 +1,192 @@
+{
+  "proxy": {
+    "sha256": "df97f078e5e42380d5bdcd1ffceaf2dd5ddd05b221d6ed6c0454c70d8c61acae",
+    "config": {
+      "feature_set": "p4g8",
+      "use_log": false,
+      "hidden": [
+        128,
+        128
+      ],
+      "dropout": 0.05,
+      "lr": 0.003,
+      "weight_decay": 1e-05,
+      "max_epochs": 3000,
+      "patience": 300,
+      "target": "oil+water, producing dates; gas = GOR x oil"
+    },
+    "sigma_proxy": {
+      "oil_cum": 0.000744610038447087,
+      "gas_cum": 0.0007511924665522007,
+      "water_cum": 0.0013783028101306083
+    }
+  },
+  "window": [
+    "1999-01-01",
+    "2008-01-01",
+    37
+  ],
+  "rho": 0.7993639904847434,
+  "best_simulated": {
+    "case_id": 6,
+    "score": 0.004939243791492652
+  },
+  "median_simulated_score": 0.06575885839518288,
+  "simulated_not_ruled_out": 8,
+  "mcmc": {
+    "acceptance": 0.42991145833333333,
+    "max_rhat": 1.0243026104937156,
+    "max_tau": 121.50202512537288,
+    "ess": 3160.4411498801473,
+    "posterior_mean_score": 0.005237280963877062,
+    "map_score": 0.0051993946911685195
+  },
+  "direct_sampling": {
+    "ess": 1325.8123380794,
+    "agree": true
+  },
+  "nroy_share": 0.069765,
+  "global_search_best_score": 0.0048424221720708045,
+  "eps": 0.001107737050425349,
+  "top10": [
+    {
+      "cand_id": "case_6",
+      "rank": 1,
+      "source": "simulated",
+      "case_id": 6.0,
+      "score": 0.004939243791492652,
+      "I_max": 2.1643119019446355,
+      "fault_trans": 0.0576906643879513,
+      "poro_mult": 1.35843836787011,
+      "perm_mult": 2.46845149082919,
+      "aquifer_pv": 119.76531266213
+    },
+    {
+      "cand_id": "set_0088",
+      "rank": 2,
+      "source": "new_set",
+      "case_id": NaN,
+      "score": 0.004946930739890108,
+      "I_max": 2.0078927134888844,
+      "fault_trans": 0.05428986957277587,
+      "poro_mult": 1.3642659977232914,
+      "perm_mult": 3.1946198725520634,
+      "aquifer_pv": 164.83670380670065
+    },
+    {
+      "cand_id": "set_1115",
+      "rank": 3,
+      "source": "new_set",
+      "case_id": NaN,
+      "score": 0.004974494494139659,
+      "I_max": 2.1349055309168103,
+      "fault_trans": 0.08585987662798354,
+      "poro_mult": 1.3700847224116826,
+      "perm_mult": 2.794074245005728,
+      "aquifer_pv": 180.6679337034737
+    },
+    {
+      "cand_id": "set_1858",
+      "rank": 4,
+      "source": "new_set",
+      "case_id": NaN,
+      "score": 0.0049865555480828145,
+      "I_max": 2.2095208825048838,
+      "fault_trans": 0.10257249945606456,
+      "poro_mult": 1.368006859869056,
+      "perm_mult": 2.776879542115469,
+      "aquifer_pv": 160.12097994517498
+    },
+    {
+      "cand_id": "set_3570",
+      "rank": 5,
+      "source": "new_set",
+      "case_id": NaN,
+      "score": 0.0050282637075941385,
+      "I_max": 2.0233060151222473,
+      "fault_trans": 0.13838692242212616,
+      "poro_mult": 1.3645382134535688,
+      "perm_mult": 3.3323783042996897,
+      "aquifer_pv": 178.09479176986318
+    },
+    {
+      "cand_id": "set_1270",
+      "rank": 6,
+      "source": "new_set",
+      "case_id": NaN,
+      "score": 0.005100468013724291,
+      "I_max": 1.9436034866124614,
+      "fault_trans": 0.08945518741520822,
+      "poro_mult": 1.3463927663341972,
+      "perm_mult": 4.419242771674145,
+      "aquifer_pv": 121.07063310751627
+    },
+    {
+      "cand_id": "case_97",
+      "rank": 7,
+      "source": "simulated",
+      "case_id": 97.0,
+      "score": 0.005218415928884011,
+      "I_max": 1.8649307108583326,
+      "fault_trans": 0.0519202246162297,
+      "poro_mult": 1.3461753186641,
+      "perm_mult": 5.40850245674001,
+      "aquifer_pv": 153.885921811579
+    },
+    {
+      "cand_id": "case_76",
+      "rank": 8,
+      "source": "simulated",
+      "case_id": 76.0,
+      "score": 0.005279506119793367,
+      "I_max": 2.597893341782663,
+      "fault_trans": 0.107852921129999,
+      "poro_mult": 1.38330698568682,
+      "perm_mult": 1.64047161269977,
+      "aquifer_pv": 182.202215643788
+    },
+    {
+      "cand_id": "case_11",
+      "rank": 9,
+      "source": "simulated",
+      "case_id": 11.0,
+      "score": 0.005326940634496878,
+      "I_max": 2.634516111300128,
+      "fault_trans": 0.124999847407453,
+      "poro_mult": 1.35378337961974,
+      "perm_mult": 7.33772698141423,
+      "aquifer_pv": 188.082216864528
+    },
+    {
+      "cand_id": "case_40",
+      "rank": 10,
+      "source": "simulated",
+      "case_id": 40.0,
+      "score": 0.005370470082557866,
+      "I_max": 2.648063336504116,
+      "fault_trans": 0.144336985381634,
+      "poro_mult": 1.354257637257,
+      "perm_mult": 4.96132084109012,
+      "aquifer_pv": 132.522202215644
+    }
+  ],
+  "selection_note": "",
+  "checks": {
+    "MCMC converged on the real history (max R-hat < 1.1)": true,
+    "Direct sampling agrees with the MCMC": true,
+    "Recovery: porosity recovered within 2 % on average": true,
+    "Recovery: true values inside the 5-95 % interval in >= 80 % of parameter-runs": true,
+    "Recovery: chosen 10 fit the clean fake history within 1.5x the pool's best 10": true,
+    "Recovery runs converged (max R-hat < 1.1 in every run)": true,
+    "All 10 chosen are not ruled out (I_max <= 3)": true,
+    "All 10 chosen inside the train range": true
+  },
+  "holdout": {
+    "early_end_date": "2005-04-01",
+    "late_mean_chosen_on_early_%": 1.0718071402803773,
+    "late_mean_pool_median_%": 10.17448485759459,
+    "late_mean_oracle_%": 1.0522188897416156,
+    "overlap_with_oracle": 9.0,
+    "spearman_early_vs_late": 0.9927272727272727
+  }
+}

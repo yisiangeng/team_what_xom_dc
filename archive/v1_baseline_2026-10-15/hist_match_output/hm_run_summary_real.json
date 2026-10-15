@@ -1,0 +1,191 @@
+{
+  "proxy": {
+    "sha256": "d8fc2890d7ea2d9cb485dbfbbfcd8a9844512b3ef106b09a28df779bd931326b",
+    "config": {
+      "feature_set": "p4g8",
+      "use_log": false,
+      "hidden": [
+        128,
+        128
+      ],
+      "dropout": 0.05,
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "max_epochs": 3000,
+      "patience": 300
+    },
+    "sigma_proxy": {
+      "oil_cum": 0.0007527740539192229,
+      "gas_cum": 0.0007075760220818746,
+      "water_cum": 0.0019697818533046378
+    }
+  },
+  "window": [
+    "1999-01-01",
+    "2008-01-01",
+    37
+  ],
+  "rho": 0.7993639904847434,
+  "best_simulated": {
+    "case_id": 6,
+    "score": 0.004939243791492652
+  },
+  "median_simulated_score": 0.06575885839518288,
+  "simulated_not_ruled_out": 8,
+  "mcmc": {
+    "acceptance": 0.4630677083333334,
+    "max_rhat": 1.02026893384602,
+    "max_tau": 95.10895197955013,
+    "ess": 4037.4748328902397,
+    "posterior_mean_score": 0.005461014263031603,
+    "map_score": 0.005424191402500655
+  },
+  "direct_sampling": {
+    "ess": 1573.6966480069161,
+    "agree": true
+  },
+  "nroy_share": 0.07221,
+  "global_search_best_score": 0.004666000672734051,
+  "eps": 0.0014910917687825647,
+  "top10": [
+    {
+      "cand_id": "set_1243",
+      "rank": 1,
+      "source": "new_set",
+      "case_id": NaN,
+      "score": 0.004776431551648987,
+      "I_max": 1.9049282566395935,
+      "fault_trans": 0.0820513777832674,
+      "poro_mult": 1.3735470886348973,
+      "perm_mult": 3.0015289441382333,
+      "aquifer_pv": 198.49061442652646
+    },
+    {
+      "cand_id": "set_0603",
+      "rank": 2,
+      "source": "new_set",
+      "case_id": NaN,
+      "score": 0.0048001775798297425,
+      "I_max": 2.042055270313414,
+      "fault_trans": 0.068387211278084,
+      "poro_mult": 1.3610853823073739,
+      "perm_mult": 5.7534107494876325,
+      "aquifer_pv": 189.06606269464461
+    },
+    {
+      "cand_id": "set_0460",
+      "rank": 3,
+      "source": "new_set",
+      "case_id": NaN,
+      "score": 0.00483884411337768,
+      "I_max": 1.8165674541856223,
+      "fault_trans": 0.06499799585791045,
+      "poro_mult": 1.3756442216568916,
+      "perm_mult": 2.3087130990004026,
+      "aquifer_pv": 193.17615776840233
+    },
+    {
+      "cand_id": "set_2319",
+      "rank": 4,
+      "source": "new_set",
+      "case_id": NaN,
+      "score": 0.0048482849951324925,
+      "I_max": 1.823143182758933,
+      "fault_trans": 0.10273136186576243,
+      "poro_mult": 1.3644041461572192,
+      "perm_mult": 3.908371163482286,
+      "aquifer_pv": 184.75094754504048
+    },
+    {
+      "cand_id": "set_3615",
+      "rank": 5,
+      "source": "new_set",
+      "case_id": NaN,
+      "score": 0.004896941285235044,
+      "I_max": 1.6806115871544716,
+      "fault_trans": 0.13414613333716874,
+      "poro_mult": 1.3695771820741933,
+      "perm_mult": 2.809045473048972,
+      "aquifer_pv": 199.1194894377659
+    },
+    {
+      "cand_id": "case_6",
+      "rank": 6,
+      "source": "simulated",
+      "case_id": 6.0,
+      "score": 0.004939243791492652,
+      "I_max": 2.1643119019446355,
+      "fault_trans": 0.0576906643879513,
+      "poro_mult": 1.35843836787011,
+      "perm_mult": 2.46845149082919,
+      "aquifer_pv": 119.76531266213
+    },
+    {
+      "cand_id": "case_76",
+      "rank": 7,
+      "source": "simulated",
+      "case_id": 76.0,
+      "score": 0.005279506119793367,
+      "I_max": 2.597893341782663,
+      "fault_trans": 0.107852921129999,
+      "poro_mult": 1.38330698568682,
+      "perm_mult": 1.64047161269977,
+      "aquifer_pv": 182.202215643788
+    },
+    {
+      "cand_id": "case_11",
+      "rank": 8,
+      "source": "simulated",
+      "case_id": 11.0,
+      "score": 0.005326940634496878,
+      "I_max": 2.634516111300128,
+      "fault_trans": 0.124999847407453,
+      "poro_mult": 1.35378337961974,
+      "perm_mult": 7.33772698141423,
+      "aquifer_pv": 188.082216864528
+    },
+    {
+      "cand_id": "case_40",
+      "rank": 9,
+      "source": "simulated",
+      "case_id": 40.0,
+      "score": 0.005370470082557866,
+      "I_max": 2.648063336504116,
+      "fault_trans": 0.144336985381634,
+      "poro_mult": 1.354257637257,
+      "perm_mult": 4.96132084109012,
+      "aquifer_pv": 132.522202215644
+    },
+    {
+      "cand_id": "case_73",
+      "rank": 10,
+      "source": "simulated",
+      "case_id": 73.0,
+      "score": 0.005435475244295866,
+      "I_max": 2.3170771557426093,
+      "fault_trans": 0.0825557217118849,
+      "poro_mult": 1.35383607491277,
+      "perm_mult": 1.47494328643656,
+      "aquifer_pv": 93.3152256843776
+    }
+  ],
+  "selection_note": "",
+  "checks": {
+    "MCMC converged on the real history (max R-hat < 1.1)": true,
+    "Direct sampling agrees with the MCMC": true,
+    "Recovery: porosity recovered within 2 % on average": true,
+    "Recovery: true values inside the 5-95 % interval in >= 80 % of parameter-runs": true,
+    "Recovery: chosen 10 fit the clean fake history within 1.5x the pool's best 10": true,
+    "Recovery runs converged (max R-hat < 1.1 in every run)": true,
+    "All 10 chosen are not ruled out (I_max <= 3)": true,
+    "All 10 chosen inside the train range": true
+  },
+  "holdout": {
+    "early_end_date": "2005-04-01",
+    "late_mean_chosen_on_early_%": 1.0718071402803773,
+    "late_mean_pool_median_%": 10.17448485759459,
+    "late_mean_oracle_%": 1.0522188897416156,
+    "overlap_with_oracle": 9.0,
+    "spearman_early_vs_late": 0.9927272727272727
+  }
+}
