@@ -15,7 +15,7 @@
   - Arps decline + WOR: 4.5 %. Liquid trend + WOR: 5.4 %.
   - Elton's curve families: 64 %. They cannot be used for the forecast.
 - **Start point: the observed 2008 values (new in version 3).** Each forecast starts from the field's observed 2008 cumulatives and rates. The case supplies the shape: the CRM time constant and gain, and the WOR slope.
-  - **Why.** The 10 cases match the observed cumulatives, but in 2008 their oil rates are 12-15 % too high and their water rates about 10 % too low. No parameter set removes this gap.
+  - **Why.** The 10 cases match the observed cumulatives, but in 2008 their oil rates are 11-15 % too high and their water rates about 10 % too low. No parameter set removes this gap.
   - **Evidence.** A blind hindcast (section 5) compared the two starts on 100 pseudo-fields and on the real field:
     - Starting from the observed state halved the error on the pseudo-fields (3.5 % against 7.5 %, p ~ 1e-36).
     - It also lowered the error on the real field (3.8 % against 6.5 %).

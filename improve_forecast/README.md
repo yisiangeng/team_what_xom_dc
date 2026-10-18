@@ -2,7 +2,7 @@
 
 **Restore point:** `archive/v2_pre_bias_fix_2026-10-15/`, with a revert command in its README.
 
-**The question.** In 2008 the history-matched cases produce oil 12-15 % too fast and water about 10 % too slowly. Does starting the forecast from the observed 2008 state, instead of each case's own state, forecast better?
+**The question.** In 2008 the history-matched cases produce oil 11-15 % too fast and water about 10 % too slowly. Does starting the forecast from the observed 2008 state, instead of each case's own state, forecast better?
 
 **Outcome.** Yes. Starting from the observed cumulatives and rates (A2) halved the hindcast error on 100 pseudo-fields (p ~ 1e-36) and cut it from 6.5 % to 3.8 % on the real field. It was adopted in `notebook4_forecast.ipynb` (section 4 reruns the test) and written up in `summary_forecast.md`, section 5.
 

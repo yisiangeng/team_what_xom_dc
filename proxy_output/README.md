@@ -6,7 +6,7 @@ The proxy model: a fast stand-in for the reservoir simulator. It maps the 4 unce
 
 | Model | File | Role |
 |---|---|---|
-| Rate proxy | `final_model.pt` | Elton's setup reproduced exactly: an MLP on the parameters and 8 grid features (`p4g8`), 2 × 128 units, 5 seeds, trained on cases 1-70. It predicts quarterly **rates** of gas, oil and water on 41 dates. Test RMSE 32.5, against 135.8 for a ridge baseline |
+| Rate proxy | `final_model.pt` | Elton's setup reproduced exactly: an MLP on the parameters and 8 grid features (`p4g8`), 2 × 128 units, 5 seeds, trained on cases 1-70. It predicts quarterly **rates** of gas, oil and water on 41 dates. Test RMSE by phase: oil 41.2 STB/d, water 35.7 STB/d, gas 13.9 MSCF/d, against 190.8 / 119.5 / 68.4 for a ridge baseline. The `all` rows of the metrics files pool phases with different units (STB and MSCF) and should not be quoted |
 | Elton's cumulative twin | `cumulative_model.pt` | The same network trained on **cumulative** curves (Elton's step 2). This was version 1 of the history-matching proxy and is kept for comparison |
 | **Improved cumulative proxy (adopted, version 2)** | `cumulative_model_improved.pt` | Trained on oil and water over the 37 producing dates, with lr 3e-3, weight decay 1e-5 and **20 seeds**. Notebook 2 copies it to `hist_match_input/cumulative_model.pt`, **the proxy used by the history matching and the forecast**. Test error is oil 0.064 % and water 0.142 % of the final observed value, against 0.071 % and 0.240 % for the twin |
 

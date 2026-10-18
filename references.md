@@ -15,7 +15,7 @@ Key references for the DWC26 project. Each one is freely available online and de
 ## 3. Neural-network proxy
 
 3. Lakshminarayanan, B., Pritzel, A. and Blundell, C. (2017). Simple and scalable predictive uncertainty estimation using deep ensembles. *Advances in Neural Information Processing Systems 30*. arXiv:1612.01474. https://arxiv.org/abs/1612.01474
-   - Applied: the proxy is an ensemble of 5 networks trained from different seeds (`src/proxy_lib.py`, `train_final`).
+   - Applied: the adopted proxy is an ensemble of 20 networks trained from different seeds (`src/proxy_lib.py`, `improved_train`, `IMPROVED_SEEDS = 20`). Elton's original proxy, kept for comparison, uses 5 (`train_final`).
 4. Kingma, D. P. and Ba, J. (2015). Adam: A method for stochastic optimization. *ICLR 2015*. arXiv:1412.6980. https://arxiv.org/abs/1412.6980
    - Applied: the optimiser for every proxy network.
 

@@ -26,8 +26,8 @@ Scores are **NRMSE as a share of the observed cumulative on 2008-01-01**, oil an
   - **What this means for the forecast.** The parameters the history leaves open hardly change the forecast. The 10 cases, and 200 posterior sets, differ by only about 1 % in 2028 oil. The larger uncertainty comes from the model's structure (next point).
 - **Main limits:**
   - **The good matches are drifting away from the field at the end of the history.**
-    - *Totals (cumulative) are close.* In 2008 every good match is 1.9-2.7 % below the field on total water and 0.5-0.9 % above it on total oil. The score uses totals only, so these cases score well.
-    - *Rates are not.* In 2008 the matches produce about 5,900-6,050 STB/d of oil against the field's 5,250 (12-15 % high) and about 7,000 STB/d of water against 7,780 (about 10 % low). A total adds up ten years of production, so a recent rate error moves it only a little. A gap in rate means the total error is still growing.
+    - *Totals (cumulative) are close.* In 2008 the 10 chosen are 1.9-2.6 % below the field on total water and 0.1-0.9 % above it on total oil. The score uses totals only, so these cases score well.
+    - *Rates are not.* In the last quarter to 2008-01-01 the 10 produce about 5,840-6,050 STB/d of oil against the field's 5,247 (11-15 % high) and about 6,940-7,040 STB/d of water against 7,782 (about 10 % low). A total adds up ten years of production, so a recent rate error moves it only a little. A gap in rate means the total error is still growing.
     - *Physically,* water is taking over faster in the field than in the model: the field's water cut rises sooner, so its oil falls and its water climbs earlier.
   - **This is a limit of the simulation model, not of the history-matching method.**
     - The same bias appears in all the good simulated cases, in the new sets from the posterior and in the global search for the best possible match. No combination of the four parameters within their ranges removes it.
@@ -46,8 +46,10 @@ Scores are **NRMSE as a share of the observed cumulative on 2008-01-01**, oil an
 | Item | Result |
 |---|---|
 | Tuning | Same grid of 36 configurations and the same two-stage 5-fold CV search. The same best config was chosen: `p4g8` (4 parameters + 8 grid features), 128x128 units, weight decay 1e-4, no log transform. The CV table matches Elton's within 0.002 |
-| Rate proxy, test RMSE (pooled) | **32.5** (oil 41.2, gas 13.9, water 35.7). Ridge baseline: 135.8. Mean curve: 763.5. Identical to Elton's saved run on every split |
-| Elton's cumulative twin, test RMSE (pooled) | 23,097 against ridge 181,002. Identical to his saved run |
+| Rate proxy, test RMSE by phase | **Oil 41.2 STB/d, water 35.7 STB/d, gas 13.9 MSCF/d.** Ridge baseline: 190.8 / 119.5 / 68.4. Mean curve: 1,015.9 / 762.1 / 369.0. Identical to Elton's saved run on every split |
+| Elton's cumulative twin, test RMSE by phase | Oil 25,915 STB, water 29,161 STB, gas 8,864 MSCF. Ridge: 272,330 / 120,054 / 98,531. Identical to his saved run |
+
+The phases are reported separately because gas (MSCF) and oil and water (STB) have different units, so a single pooled RMSE mixes them. The pooled `all` rows in `proxy_output/metrics_rate.csv` and `metrics_cumulative.csv` (and `rate_proxy_rmse_pooled` in `proxy_summary.json`) are kept only for comparison with Elton's run and should not be quoted.
 | Grid mapping for new parameter sets | Elton's `GridMapper` uses the linear fallback, because the analytic formula misses `mean_tranx` by 0.29 sd. The fallback is within 0.002 sd on the 30 held-out cases |
 
 ### The adopted cumulative proxy (notebook 2, section 6b)
@@ -180,8 +182,8 @@ All 13 automated checks in notebook 3 pass.
 ## 5. Limitations
 
 1. **Water is under-matched at the end of the history.**
-   - Every good match ends 2008 with cumulative water 1.9-2.7 % low and oil 0.5-0.9 % high.
-   - Their last-quarter rates are about 10 % low on water and 12-15 % high on oil.
+   - The 10 chosen end 2008 with cumulative water 1.9-2.6 % low and oil 0.1-0.9 % high.
+   - Their last-quarter rates are about 10 % low on water and 11-15 % high on oil.
    - No parameter set in the design range removes this, so it is a limit of the simulator family against the real field.
    - The forecast corrects the 2008 level by starting from the observed values, chosen by a blind hindcast (`summary_forecast.md`, section 5). The decline shape still comes from the cases.
 2. **Edge of the design range.** The proxy's single best point sits on two edges of the box (lowest fault transmissibility, highest permeability). The aquifer posterior leans high. The pipeline does not leave the train range, where the proxy is valid.

@@ -254,7 +254,7 @@ CRM + WOR had the lowest error at all 3 cut-offs (about 2.9 % on average). Elton
 
 ### 3.5 The start-point problem and the hindcast
 
-The 10 cases fit the observed *cumulatives* well. But in 2008, their *rates* are wrong: oil is about 12-15 % too high and water about 10 % too low. A forecast that starts from the case's own rates carries this gap for 20 years.
+The 10 cases fit the observed *cumulatives* well. But in 2008, their *rates* are wrong: oil is about 11-15 % too high and water about 10 % too low. A forecast that starts from the case's own rates carries this gap for 20 years.
 
 We tested four start points:
 
