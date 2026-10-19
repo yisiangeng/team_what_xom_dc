@@ -1,6 +1,6 @@
 **Slide context: Team What, ExxonMobil DataWorks Challenge 2026 (DWC26)**
 
-Prepared 2026-10-17 and re-checked 2026-10-18 against the repository at commit `ad390b1` ("check b4 submission"), plus the uncommitted documentation fixes of 17-18 Oct (`references.md`, `summary_hist_mat.md`, `proxy_output/README.md`). This file is shared by the whole team as the single source for the slides, the video and the Power BI dashboard. Every number was checked against a saved output file, except those marked "team estimate" or "team decision"; sources are in brackets. Anything not found in the repo is marked [NOT FOUND - please fill in]; none remain.
+Prepared 2026-10-17 and re-checked 2026-10-18 against the repository at commit `ad390b1` ("check b4 submission"), plus the uncommitted documentation fixes of 17-18 Oct (`references.md`, `summary_hist_mat.md`, `proxy_output/README.md`). All values re-checked on 2026-10-19 against the saved outputs at commit `9bdd640` (later commits change documentation only). This file is shared by the whole team as the single source for the slides, the video and the Power BI dashboard. Every number was checked against a saved output file, except those marked "team estimate" or "team decision"; sources are in brackets. Anything not found in the repo is marked [NOT FOUND - please fill in]; none remain.
 
 > **Team decisions (2026-10-17).**
 > - **Use:** every number and figure in this file may be used in the slides and in the video.
@@ -21,8 +21,8 @@ Prepared 2026-10-17 and re-checked 2026-10-18 against the repository at commit `
 | Title (approved 2026-10-18) | **"From 100 Reservoir Simulations to a 20-Year Production Forecast: Machine Learning-Assisted History Matching"**. Competition topic: Machine Learning-Assisted History Matching and the Challenge of Production Forecasting [source: instruction/instruction1.md] |
 | One-sentence summary | We trained a fast neural-network copy of a reservoir simulator, used it to find the rock parameters that reproduce the field's 1998-2008 production, and forecast the 10 best-matching cases to 2028 [source: README.md] |
 | Team | "Team What": Elton, Si Jie, Yi Siang and Zi Yang [source: README.md; our_work/README.md; git log] |
-| Collaboration | Roles, who did what, how the team decided, and meeting snapshots: see section 12 |
-| Timeline | Repo set up 2026-10-08; last commit 2026-10-16 [source: git log]. Deadlines: code 16 Oct 2026; documents, Power BI and video 20 Oct 2026 [source: README.md; instruction/instruction2_briefing_slides.md, slide 34] |
+| Collaboration | Roles, who did what, how the team decided, and meeting snapshots: see section 13 |
+| Timeline | Repo set up 2026-10-08; last code commit 2026-10-16; commits on 2026-10-18 change documentation only [source: git log]. Deadlines: code 16 Oct 2026; documents, Power BI and video 20 Oct 2026 [source: README.md; instruction/instruction2_briefing_slides.md, slide 34] |
 | Tech stack | Python 3.12, numpy, pandas, scipy, scikit-learn, matplotlib, openpyxl, PyTorch (CPU), emcee (MCMC sampler) [source: README.md]. Power BI for the dashboard: version 2.154.1260.0 (64-bit, May 2026) or earlier, with the Excel deliverable as its source (required by the brief) [source: instruction/instruction1.md] |
 | Final deliverable | `forecast_output/10_Final_deliverables.xlsx`: 10 sheets (Case 1-10), 80 quarterly rows each, 2008-04-01 to 2028-01-01 [verified by reading the file] |
 
@@ -52,6 +52,24 @@ The organiser gave us 100 simulator runs, each with different values of 4 uncert
   - *Proxy:* a machine-learning model trained to imitate the simulator, so that thousands of parameter sets can be tested quickly [source: methodology_explained.md, section 1.1].
   - *Cumulative:* total produced up to a date. Units: STB (stock-tank barrels), MMSTB (million STB), MSCF (thousand standard cubic feet of gas).
 - **The 4 uncertain parameters** [source: methodology_explained.md, section 0]: porosity multiplier (how much oil the rock holds), permeability multiplier (how easily fluid flows), fault transmissibility (how easily fluid crosses the fault), aquifer pore volume (size of the water body pushing in).
+- **How the simulator works (for a diagram).** A reservoir simulation model represents the reservoir as many grid cells, each assigned rock and fluid properties, and solves partial differential equations derived from mass balance to predict fluid flow, pressure and production [source: briefing slide 24]. The organiser does not name the simulator software.
+
+  ```
+  Inputs (per grid cell)                                  Simulator                          Outputs (field level)
+  - Geologic: porosity ×mult*, permeability ×mult*,       Solves mass-balance flow           Oil / water / gas
+    fault transmissibility*, aquifer volume*         →    equations (oil, water, gas)   →    rates + cumulatives,
+  - Fluid properties: viscosity, density, ... (fixed)     in 42,512 active cells,            quarterly 1998-2008
+  - Rock-fluid: relative permeability kr,                 stepping through time              (41 dates)
+    capillary pressure Pc (fixed)
+  - Wells: field water injection schedule
+                    * = the 4 uncertain parameters, varied across the 100 runs
+  ```
+
+  - *Input groups:* slide 24 sorts the inputs into "geologic" properties (porosity, permeability), fluid properties (viscosity, density, formation volume factor, solution gas ratio) and displacement properties that depend on rock-fluid interaction (relative permeability kr and capillary pressure Pc, functions of saturation) [source: briefing slide 24].
+  - *Where our parameters sit:* all 4 uncertain parameters are geologic or aquifer properties; the fluid and rock-fluid properties are the same in all 100 runs. Interpretation: this is why the water-rise gap (section 5.ii, finding 4) cannot be removed by the 4 parameters; water breakthrough is governed largely by relative permeability, which is fixed.
+  - *Why a proxy:* one run solves the equations in every cell at every time step, and history matching needs thousands of runs; only 100 pre-run cases exist and the simulator cannot be run [source: methodology_explained.md, section 1.1]. Do not quote a run time or speed-up: the simulator's run time is not known (team decision).
+  - *Why a separate forecast:* the runs stop at 2008-01-01, so no simulated production exists after that date [source: summary_forecast.md, section 1].
+  - *The reference paper* (Zhang et al. 2023) models a different reservoir (the SPE10 Tarbert model in CMG-IMEX, with 10 uncertain parameters including relative-permeability terms). Use it only for the history-matching loop (its Fig. 2: prior → proxy → MCMC → check), not as a description of our simulator [source: reference/robust-history-matching-bayesian-lstm.md].
 - **Prior approach (organisers' reference):** Zhang et al. 2023, SPE Journal: an LSTM (recurrent neural network) proxy plus Bayesian MCMC [source: references.md]. Its LSTM is used only inside the simulated period, so it does not solve the 20-year forecast on its own [source: summary_forecast.md, section 2].
 - **Constraints** [source: faq.md; summary_forecast.md, section 1; instruction/instruction1.md]:
   - Only the provided data may be used (FAQ 3).
@@ -78,105 +96,201 @@ Main objective (organiser): build a proxy, find the parameters that minimise the
 
 **5. Methodological Approach**
 
-**Data** [source: data_after_engineering/README.md; data_desc_engineered.md]
+The work has three stages, each in its own notebook: **(i) a proxy model** that imitates the simulator, **(ii) history matching** on that proxy, and **(iii) a forecast** of the 10 chosen cases to 2028. Each part below gives the stage's methodological approach, key findings and results. Section 6 collects the headline numbers of all three stages.
+
+**Shared inputs** [source: data_after_engineering/README.md; data_desc_engineered.md]
 - 9 organiser Excel files (up to 330 MB each), converted once into clean CSV/NumPy files by notebook 1.
 - 100 cases: train 1-70, validation 71-85, test 86-100. Each case: 4 parameters + a 3D grid of 42,512 active cells.
 - History: quarterly, 1998-01-01 to 2008-01-01 (41 dates). The first 4 dates (1998) have zero cumulative production, which is valid data (FAQ 12-13); the matching window is 1999-01-01 to 2008-01-01 (37 dates) [source: summary_hist_mat.md, sections 2 and 8].
 - Observed 2008 cumulatives: oil 38.38 MMSTB, water 12.81 MMSTB, gas 13.94 million MSCF [source: hist_match_input/proxy_meta.json].
 - Forecast horizon: 80 quarters, 2008-04-01 to 2028-01-01 [source: data_after_engineering/forecast_dates.csv].
+- Common unit for errors and scores: % of the observed 2008 cumulative ("HM units"). Example: 0.49 % means the curve is, on average, 0.49 % of the final cumulative away from the history [source: summary_hist_mat.md, intro].
 
-**Preprocessing and features**
-- Cumulatives are matched instead of rates, because cases and history report rates differently [source: data_after_engineering/README.md].
-- Inputs: 4 parameters + 8 grid summary features (config `p4g8`); a linear "grid mapper" computes the 8 features for new parameter sets [source: summary_hist_mat.md, section 1].
-- Gas is rebuilt as GOR × oil (gas-oil ratio ≈ 0.3633) [source: summary_hist_mat.md, section 1].
+**Pipeline (for a flow diagram)** [source: README.md]
+1. Raw Excel (9 files) → notebook 1: clean data.
+2. Notebook 2 (part i): train the proxy (parameters → production curves).
+3. Notebook 3 (part ii): MCMC on the proxy → posterior → choose the 10 best cases.
+4. Notebook 4 (part iii): backtest forecast methods → forecast the 10 to 2028 from the observed 2008 start.
+5. Output: `10_Final_deliverables.xlsx` → Power BI dashboard.
 
-**Models and why** [source: summary_hist_mat.md; summary_forecast.md]
+Full pipeline run time (notebooks 1-4): about 30-40 min [team estimate, 2026-10-18; not recorded in the repo. The repo gives about 15 min for the first run of notebook 1 and about 2 min for notebook 4: README.md; forecast_output/README.md].
 
-| Stage | Technique | Why chosen |
-|---|---|---|
-| Proxy | MLP (multi-layer perceptron, 2×128 units) predicting the deviation from the mean curve; ensemble of 20 seeds; learning rate 3e-3, weight decay 1e-5 | The team chose Elton's proxy over Si Jie's LSTM [source: our_work/README.md], then improved it after testing 8 variants. The repo has no head-to-head test of the two on the same data |
-| History matching | Bayesian MCMC (Markov-chain Monte Carlo, emcee: 4 ensembles × 16 walkers × 12,000 steps); Gaussian likelihood with AR(1) correlated errors and proxy error added | Follows the organisers' reference paper; gives the range of plausible parameters, not just one answer |
-| Choice of 10 | "Quality first": keep candidates within eps (the proxy error, 0.111 %) of the best score; simulated cases first, then new posterior sets by score | Organiser FAQ 8-9 |
-| Forecast | `crm_wor`: capacitance-resistance model (CRM, a "tank" model where liquid output follows water injection) + water-oil-ratio (WOR) trend to split oil and water | Won the backtest against 3 alternatives |
-| Forecast start | "A2": start from the field's observed 2008 cumulatives and rates; the case supplies only the curve shape | Won a blind hindcast |
+---
+
+**5.i Proxy model** (notebook 2; code in `src/proxy_lib.py`)
+
+*Methodological approach*
+
+- **Goal.** Replace the simulator inside the history match: map the 4 parameters to oil and water cumulative curves fast enough to evaluate millions of times.
+- **Preprocessing and features.**
+  - Cumulatives are matched instead of rates, because cases and history report rates differently [source: data_after_engineering/README.md].
+  - Inputs: 4 parameters + 8 grid summary features (config `p4g8`); a linear "grid mapper" computes the 8 features for new parameter sets (within 0.002 sd on 30 held-out cases) [source: summary_hist_mat.md, section 1].
+  - Gas is rebuilt as GOR × oil (gas-oil ratio ≈ 0.3633) [source: summary_hist_mat.md, section 1].
+- **Model and why.** MLP (multi-layer perceptron, 2×128 units) predicting the deviation from the mean curve; ensemble of 20 seeds. The team chose Elton's proxy over Si Jie's LSTM [source: our_work/README.md], reproduced it exactly, then improved it after testing 8 variants. The repo has no head-to-head test of the two original proxies on the same data.
+- **Validation strategy.** 5-fold cross-validation (CV) on cases 1-70, validation set 71-85, test set 86-100; out-of-fold check on 85 cases with a Wilcoxon signed-rank test and a case-bootstrap interval [source: summary_hist_mat.md, section 7].
 
 *Selection protocol (fixed before the tests):*
 1. **Metric, and why it is used.** J = RMS of the oil and water errors in HM units (% of the final observed 2008 cumulative, over the 37 producing dates). It is the same quantity the history matching scores, so lowering J directly lowers the proxy error term `eps` in the likelihood. Gas is excluded (gas ≈ 0.3633 × oil, so it would count oil twice and hide water, the hard phase); rates are excluded because cases and history report rates under different conventions. The symmetric square-root-of-the-mean form stops a variant from winning by trading one phase for the other, and the rule adds the explicit "oil not worse" guard.
 2. **Choose on cases 1-85 only.** 5-fold CV on the 70 train cases plus the 15 validation cases; test cases 86-100 are reserved for confirmation.
-3. **Success rule (agreed).** Validation water at least 10 % lower than the baseline and validation oil not higher. **Consistency check (added after the first run):** CV J must not be higher than the baseline's either — the GP looked good on validation but was much worse in CV.
+3. **Success rule (agreed).** Validation water at least 10 % lower than the baseline and validation oil not higher. **Consistency check (added after the first run):** CV J must not be higher than the baseline's either, so that a validation result is confirmed on more cases. The GP average still passed on CV J (0.119 % vs 0.180 %); its weakness showed in CV oil (0.096 % vs 0.074 %; the GP alone 0.178 %) and the test then rejected it (item 6) [source: improve_proxy/results/variant_comparison.csv].
 4. **Staged confirmation.** The runner-up (V4) was checked by out-of-fold error over all 85 cases (a larger sample than the 15 validation cases), then once on the test set (an openly stated second use of the test cases).
-5. **Adoption.** V4 with 20 seeds, trained on cases 1-70: passes the rule (validation water −30 %, oil −1 %), beats the baseline by ≈20 % out-of-fold (p ≈ 1e-9) and on the test set (water −41 %, oil −10 %, J −38 %). The 5- and 20-seed versions are practically equivalent (test J 0.106 vs 0.110 %); 20 seeds was adopted because 5 seeds missed the strict oil clause by 1 %, within the noise of 15 cases.
+5. **Adoption.** V4 with 20 seeds, trained on cases 1-70: passes the rule (validation water −30 %, oil −1 %), beats the baseline by ≈20 % out-of-fold (p ≈ 1e-9) and on the test set (water −41 %, oil −11 %, J −38 %). The 5- and 20-seed versions are practically equivalent (test J 0.106 vs 0.110 %); 20 seeds was adopted because 5 seeds missed the strict oil clause by 1 %, within the noise of 15 cases.
 6. **Lesson.** 15 validation cases are a small sample: the GP average looked best there and failed the test. The decision therefore rested on CV/out-of-fold results over more cases. Because the test cases were used three times in the project, the test p-values are optimistic; the out-of-fold result does not use them.
 
-**Final proxy model selected.** V4 with a 20-seed ensemble — the "improved cumulative proxy" (adopted 15 Oct 2026). An MLP (2 × 128, SiLU, dropout 0.05) takes 12 inputs (4 parameters + 8 grid features) and predicts oil and water on the 37 producing dates as deviations from the mean train curve; gas is rebuilt as GOR × oil (≈ 0.3633) and the 4 pre-production dates are 0. Training: full-batch Adam, lr 3e-3, weight decay 1e-5, cosine decay, 1,145 epochs (CV median), cases 1-70 only; 20 seeds, averaged and clipped at 0. Accuracy in HM units: validation oil 0.074 %, water 0.138 %; test oil 0.064 %, water 0.142 %; ranks cases exactly like the simulator (Spearman 1.000); `eps` = 0.111 % (v1: 0.149 %); 0.5 ms per call with all 20 networks batched. It ships as `hist_match_input/cumulative_model.pt` for notebook 3 and supplies the curves of the 4 new parameter sets in the final 10; the rate proxy is comparison only [source: summary_hist_mat.md, section 1; notebook2_proxy_model.ipynb, section 6b].
+**Final proxy model selected.** V4 with a 20-seed ensemble — the "improved cumulative proxy" (adopted 15 Oct 2026). An MLP (2 × 128, SiLU, dropout 0.05) takes 12 inputs (4 parameters + 8 grid features) and predicts oil and water on the 37 producing dates as deviations from the mean train curve; gas is rebuilt as GOR × oil (≈ 0.3633) and the 4 pre-production dates are 0. Training: full-batch Adam, lr 3e-3, weight decay 1e-5, cosine decay, 1,145 epochs (CV median), cases 1-70 only; 20 seeds, averaged and clipped at 0. It ships as `hist_match_input/cumulative_model.pt` for notebook 3 and supplies the curves of the 4 new parameter sets in the final 10; the rate proxy is comparison only [source: summary_hist_mat.md, section 1; notebook2_proxy_model.ipynb, section 6b].
 
-**Validation strategy**
-- Proxy: 5-fold cross-validation (CV) on cases 1-70, validation set 71-85, test set 86-100; out-of-fold check on 85 cases with Wilcoxon signed-rank test [source: summary_hist_mat.md, section 7].
-- HM: R-hat convergence, independent direct sampling, implausibility screening, hold-out of the late history, recovery test on 5 known cases [source: summary_hist_mat.md, sections 3-4].
-- Forecast: backtest at cut-offs 2005, 2006, 2007 on 100 cases and the field; blind hindcast of start options with a rule fixed before the run [source: summary_forecast.md, sections 3, 5].
+*Key findings*
+1. **The proxy is accurate enough to replace the simulator for matching.** Its test errors (0.06 % oil, 0.14 % water) are far below the best-case misfit (≈0.49 %), and it orders cases exactly as the simulator does (Spearman 1.000) [source: proxy_summary.json; summary_hist_mat.md].
+2. **The improvement is real and significant.** About 20 % lower error on both phases out-of-fold over 85 cases (p ≈ 1e-9), and 41 % lower water error on the test cases [source: improve_proxy/results/significance_summary.csv].
+3. **Its effect on the history match is modest.** The proxy error passed to the history match (`eps` = 0.111 %) was already far below the best-case misfit; after the upgrade, porosity, convergence and the best simulated match (case 6) are unchanged. The history match is robust to the proxy [source: summary_hist_mat.md, section 7].
+4. **15 validation cases are too few to pick a winner.** The best-looking variant on validation (MLP + Gaussian process average, J 0.063 %) failed the test (oil 0.30 %, against 0.064 % for the adopted proxy) and was rejected [source: summary_hist_mat.md, section 7].
+5. **The ensemble spread is not a reliable error estimate.** It ranks validation errors only weakly (Spearman 0.48) and is 2.5× smaller than the actual error, so the measured validation error is used as the proxy error instead [source: summary_hist_mat.md, section 7].
 
-**Metrics**
-- HM score: NRMSE (normalised root-mean-square error) of oil and water cumulatives, as % of the observed 2008 cumulative [source: summary_hist_mat.md, intro].
-- Forecast error: relative error of the volume produced after the cut-off [source: summary_forecast.md, section 3].
+*Results*
 
-**Pipeline (for a flow diagram)** [source: README.md]
-1. Raw Excel (9 files) → notebook 1: clean data.
-2. Notebook 2: train the proxy (parameters → production curves).
-3. Notebook 3: MCMC on the proxy → posterior → choose the 10 best cases.
-4. Notebook 4: backtest forecast methods → forecast the 10 to 2028 from the observed 2008 start.
-5. Output: `10_Final_deliverables.xlsx` → Power BI dashboard.
+| Metric (adopted proxy; HM units) | Value | Source |
+|---|---|---|
+| Validation error, oil / water | 0.074 % / 0.138 % | proxy_output/proxy_summary.json |
+| Test error, oil / water | **0.064 % / 0.142 %** | same |
+| Out-of-fold error, 85 cases, oil / water | 0.070 % / 0.227 % | improve_proxy/results/significance_summary.csv |
+| Ranking agreement with simulator (Spearman, validation and test) | 1.000 | proxy_output/proxy_summary.json |
+| Proxy error passed to the history match (`eps`) | 0.111 % | summary_hist_mat.md, section 1 |
+| Speed | 0.5 ms per call (20 networks batched) | summary_hist_mat.md, section 1 (team write-up; no saved timing output) |
+
+No speed-up multiple over the simulator is claimed, because its run time is not known. Figures: `proxy_output/figs/fig5_hm_units.png`, `improve_proxy/results/figs/variants_validation.png`.
+
+---
+
+**5.ii History matching** (notebook 3)
+
+*Methodological approach* [source: summary_hist_mat.md, sections 2-4 and 8]
+
+- **Score.** NRMSE (normalised root-mean-square error) of the oil and water cumulatives in HM units, over the 37 producing dates. Gas is left out (≈ 0.3633 × oil). The 4 zero quarters of 1998 are valid data, but every candidate matches them exactly, so they cannot change a score (checked).
+- **Bayesian set-up.** Follows the organisers' reference paper (Zhang et al. 2023); gives the range of plausible parameters, not just one answer.
+  - Prior: uniform on the train range, no padding, so the proxy is never used outside its training range.
+  - Likelihood: Gaussian with the noise level sampled, AR(1) correlated errors (estimated rho = 0.80), and the proxy error added to the variance.
+  - Sampler: emcee MCMC (Markov-chain Monte Carlo), 4 ensembles × 16 walkers × 12,000 steps, started across the whole prior box, half dropped as burn-in.
+- **Choice of 10: "quality first"** (organiser FAQ 8-10).
+  - Candidates: the 100 simulated cases + 4,000 posterior sets.
+  - Rule out candidates with implausibility `I_max > 3`.
+  - Keep the equal-best band: scores within `eps` (the proxy error, 0.111 %) of the best.
+  - Inside the band, simulated cases first by score (their curves are exact), then new sets by score; near-copies (distance < 0.05) are skipped.
+- **Validation (13 automated checks).**
+  - Convergence: R-hat (< 1.1 = converged), autocorrelation time, effective sample size.
+  - Independent cross-check: direct sampling (400,000 draws, noise integrated out exactly).
+  - Implausibility screening (assumed 1 % observation + model error).
+  - Hold-out: choose on the early history (to 2005-04-01), score on the late history.
+  - Recovery test: 5 validation cases used as fake histories at 0.5 % and 2 % noise, each removed from the pool before the full pipeline is run.
+  - Physical realism (FAQ 5): parameters inside the range, zero before first production, cumulatives never fall.
+- **Origin.** A hybrid of Yi Siang's drafts v1/v2 (score, likelihood, MCMC, checks) and Zi Yang's idea of using posterior sets as candidates.
+
+*Key findings*
+1. **The history fixes porosity but leaves other parameters open.** Porosity multiplier 1.366 (5-95 %: 1.341-1.383), posterior spread 6 % of prior; permeability and aquifer partly constrained; fault transmissibility not constrained (spread 99 % of prior) [source: hm_details_real.xlsx, sheet posterior].
+2. **The simulated cases already contain matches as good as any parameter set.** The best score the proxy can reach anywhere in the range is 0.484 %, only 0.01 % better than case 6 (0.494 %) and far below `eps` [source: hm_run_summary_real.json].
+3. **The 10 chosen are statistically tied.** 6 simulated cases (6, 97, 76, 11, 40, 73) + 4 new parameter sets; scores span 0.053 %, less than `eps` = 0.111 %, so their order is not meaningful. The simulated cases rank 1,512-2,661 of 4,100 candidates but are still chosen, because the gap to the best is within the proxy's own error [source: hm_run_summary_real.json; summary_hist_mat.md, section 3].
+4. **The simulator family cannot reproduce the field's late water rise.** In the last quarter of the history (to 2008-01-01) the 10 cases produce oil 11-15 % too fast (5,844-6,051 vs 5,247 STB/d) and water about 10 % too slowly (6,943-7,043 vs 7,782 STB/d), while their totals stay close (water 1.9-2.6 % low, oil 0.1-0.9 % high). The same bias appears in every good simulated case, every posterior set and the global best match, so it is a limit of the model family, not of the matching method [source: recomputed from hist_match_output/top10_series_real.csv and history_observed.csv; summary_hist_mat.md, "Main limits"].
+   - Interpretation: whatever controls water breakthrough (e.g. relative permeability) is probably not among the 4 uncertain parameters, as the team's own write-up suggests.
+   - The sampled noise levels (posterior medians: oil 0.10 %, water 0.42 %) are larger than the proxy error, which confirms the remaining mismatch is model error, not proxy error.
+5. **The 4 new parameter sets are defensible** (team decision, see the box at the top): the proxy error is small and part of the likelihood; the recovery test found the known answers (40 of 40); a new set never displaces an equally good simulated case [source: summary_hist_mat.md, section 8].
+
+*Results*
+
+| Metric | Value | Comparison | Source |
+|---|---|---|---|
+| Score of the 10 chosen (lower is better) | **0.491-0.544 %** | Best simulated case (6): 0.494 %; median of 100 cases: 6.58 % | hm_run_summary_real.json |
+| Equal-best band | Score ≤ 0.601 %: 3,786 candidates (6 simulated, 3,780 new sets) | - | same |
+| 2008 cumulatives of the 10 | Oil 38.42-38.72 MMSTB; water 12.48-12.58 MMSTB | Observed 38.38 / 12.81 | summary_hist_mat.md, section 3 |
+| MCMC convergence (max R-hat) | 1.024 | Acceptance 0.43; effective sample size ≈3,160 | hm_run_summary_real.json |
+| Direct-sampling cross-check | Agrees: every mean within 0.04 posterior sd, every sd within 2 % | Effective sample size 1,326 | same; summary_hist_mat.md, section 3 |
+| Implausibility screen (1 % error) | 7.0 % of the parameter box not ruled out; 8 of 100 cases survive | Only porosity restricted (1.270-1.399) | same |
+| Hold-out (early → late history) | Spearman 0.993; chosen 10 score 1.07 % on the late history | Best possible 1.05 %; median case 10.2 % | summary_hist_mat.md, section 3 |
+| Recovery test: true parameters inside 5-95 % interval | **40 of 40** | Porosity error of the posterior mean 0.5 % (max 1.3 %) | hm_details_real.xlsx, sheet recovery_test |
+| Automated checks passed | **13 of 13** | - | hm_run_summary_real.json |
+
+**Posterior** [source: summary_hist_mat.md, section 3; hm_details_real.xlsx, sheet posterior]
+
+| Parameter | Prior (train range) | Posterior 5 / 50 / 95 % | sd / prior sd | Reading |
+|---|---|---|---|---|
+| Porosity multiplier | 0.801-1.494 | 1.341 / 1.366 / 1.383 | 0.06 | Fixed by the history |
+| Permeability multiplier | 0.54-9.50 | 0.71 / 1.99 / 4.83 | 0.52 | Partly constrained, leaning low |
+| Aquifer pore volume | 54-200 | 116 / 162 / 195 | 0.58 | Partly constrained, leaning high |
+| Fault transmissibility | 0.051-0.150 | 0.057 / 0.105 / 0.146 | 0.99 | Not constrained |
+
+**Comparison of ways of choosing the 10** (all scored with the same proxy) [source: hm_details_real.xlsx, sheet selection_comparison]
+
+| Way of choosing 10 | Mean score | Worst score | Outside train range |
+|---|---|---|---|
+| Quality first (adopted) | 0.513 % | 0.544 % | 0 |
+| Hybrid k-means (v3) | 0.512 % | 0.537 % | 0 |
+| Simulated cases only | 0.626 % | 0.925 % (4 ruled out) | 0 |
+| Elton's 10 | 0.531 % | 0.572 % | 9 |
+| Zi Yang's 10 | 0.513 % | 0.520 % | 0 |
+
+Figures: `fit_top10_real.png`, `posterior_real.png`, `selection_real.png`, `scores_real.png`, `trace_real.png`, `direct_sampling_real.png`, `holdout_real.png` (all in `hist_match_output/figs/`).
+
+---
+
+**5.iii Forecast** (notebook 4; code in `src/forecast_lib.py`)
+
+*Methodological approach* [source: summary_forecast.md, sections 1-5]
+
+- **Why a separate method.** No simulator runs exist after 2008-01-01, and the proxy maps parameters only to the 41 dates it was trained on, so it cannot forecast. Each of the 10 cases is therefore extended by a forecasting method fitted to its own late history. Si Jie's recurrent networks, which can run past 2008, flattened their oil decline after 2010; the organisers' reference paper uses its LSTM only inside the simulated period.
+- **Four candidate methods.**
+
+| Code | Method | How it works |
+|---|---|---|
+| `elton` | Cumulative curve families (Elton's step 4) | Arps-type (oil) and Gompertz (water) curves fitted to the whole 1998-2008 cumulative curve |
+| `arps_wor` | Decline curve + WOR trend | Modified hyperbolic Arps decline of the oil rate (switch to exponential at 5 %/yr); water = WOR × oil |
+| `liq_wor` | Liquid trend + WOR split | Exponential, non-increasing liquid rate; oil = liquid / (1 + WOR) |
+| **`crm_wor`** | **CRM + WOR split (adopted)** | Field-level capacitance-resistance model, a "tank" where the liquid rate relaxes towards G × injection with time constant tau: q_L,k = q_L,k-1 e^(-dt/tau) + (1 − e^(-dt/tau)) G I_k. tau and G fitted on the last 12 quarters; split into oil and water by the WOR trend |
+
+- **Shared rules.** ln(WOR) linear in cumulative oil, moved through the last 2 quarters' WOR ("last" anchor); gas = GOR × oil (GOR of the last 4 quarters, ≈ 0.3633); water injection held at 9,327 STB/d, no new wells (FAQ 2).
+- **Physical constraints.** Cumulatives only increase; oil rate never increases; water cut < 1; first-quarter rates within 10 % of the 2008 start rates.
+- **Method choice: backtest.** Hide the last 1-3 years (cut-offs 2005, 2006, 2007; 12, 8 and 4 quarters ahead) on all 100 simulated cases and the real field; error = relative error of the volume produced after the cut-off; median over the 100 cases decides. Settings searched: fit window 8, 12 or 16 quarters; WOR anchor `fit` or `last`.
+- **Start-point choice: blind hindcast.** The whole chain is repeated blind at each cut-off, with each of the 100 cases as a pseudo-field (the other 99 are candidates) and with the real field as truth; the 10 best blind matches are forecast from 4 start options (`main` = own state, `A1`, `A2`, `fade_T`). **Rule set before the run:** switch only if the new start is better on the pseudo-fields (paired Wilcoxon, p < 0.01) and on the real field.
+  - Adopted **"A2"**: start from the field's observed 2008 cumulatives and rates; the case supplies only the curve shape (tau, G and the WOR slope).
+- **Uncertainty.** P10 / P50 / P90 of the 10 cases; a posterior band from 200 MCMC parameter sets; and a **wider range** (min-max of the 10 cases, their own-start forecasts and a data-only field forecast) that adds start-point and model-structure uncertainty.
+
+*Key findings*
+1. **A tank model plus water-oil trend forecasts best.** `crm_wor` wins the backtest (2.94 %) against `arps_wor` (4.47 %) and `liq_wor` (5.44 %). It uses the water injection record, which the decline methods ignore, and cuts the error by about a third against the best decline method. Averaging the two best methods was worse (3.48 %) [source: forecast_run_summary.json; summary_forecast.md, section 3].
+2. **Elton's original forecast fails the backtest** (≈64 % error: oil ≈62 % too high, water ≈66 % too low within 1-3 years), so it was replaced [source: forecast_run_summary.json].
+3. **Starting the forecast from the observed 2008 state halves the error.** Blind hindcast: 3.52 % vs 7.47 % on 100 pseudo-fields (better in 83 % of pairs, p = 5e-37) and 3.80 % vs 6.54 % on the real field. It lowers the mean 2028 oil of the 10 from 61.22 to 58.79 MMSTB [source: summary_forecast.md, section 5; forecast_run_summary.json].
+   - The simulator's own continuation is the most accurate start on the pseudo-fields (1.5 %) but the least accurate on the real field (8-9 %): further evidence that the field lies outside the model family [source: summary_forecast.md, section 5].
+4. **The 10 cases agree within ≈1 % on 2028 oil, which understates the real uncertainty.** In the hindcast, the blind matches' range never contained the field's water (0 of 3 cut-offs), so the wider range is the one to present [source: summary_forecast.md, section 4].
+5. **The late water-rise gap carries into the forecast.** The field's WOR slope (0.130/MMSTB) is ≈1.7× the cases' (0.074-0.078). A2 fixes the 2008 level, but the forecast then follows the cases' slower water rise, so it is probably high on oil and low on water later; the data-only field forecast (oil 54.2 MMSTB) marks the other side of the range [source: forecast_output/forecast_by_case.csv; summary_forecast.md, section 6b].
+
+*Results*
+
+| Metric | Value | Comparison | Source |
+|---|---|---|---|
+| Backtest error, adopted method (`crm_wor`, 12 quarters, WOR "last") | 2.94 % (cases); 3.95 % (field) | `arps_wor` 4.47 / 4.91 %; `liq_wor` 5.44 / 6.09 %; `elton` 64.2 / 66.0 % | forecast_run_summary.json |
+| Start-point hindcast error, A2 (pseudo-fields / real field) | 3.52 % / 3.80 % | Own start: 7.47 % / 6.54 %; p = 5e-37 | same |
+| **Oil 2028, mean of the 10 cases (headline)** | **58.79 MMSTB** | 38.38 MMSTB in 2008 | same |
+| Oil 2028, 10 cases (P10 / P50 / P90) | 58.58 / 58.73 / 59.00 MMSTB | Posterior band (200 sets): 58.23 / 58.38 / 58.59 | summary_forecast.md, section 4 |
+| Oil 2028, wider range | **54.16-61.71 MMSTB** | Own start: 61.22 (mean); field reference: 54.16 | forecast_run_summary.json; summary_forecast.md, section 5 |
+| Water 2028, 10 cases (P10 / P50 / P90); wider range | 85.04 / 85.27 / 85.53; 81.83-90.01 MMSTB | 12.81 MMSTB in 2008 | summary_forecast.md, section 4 |
+| Gas 2028, 10 cases (P10 / P50 / P90); wider range | 21.28 / 21.34 / 21.43; 19.68-22.42 million MSCF | 13.94 million MSCF in 2008 | same |
+| Oil rate and water cut, 2028 | ≈1,570-1,630 STB/d; 0.872-0.876 | 2008: 5,247 STB/d | forecast_output/forecast_by_case.csv |
+| Fitted CRM gain G (liquid per barrel injected) | 1.342-1.366 | Field 1.365 (G > 1: aquifer support as well as injection) | same |
+| Physical checks (forecast curves; fitted constants) | 5 of 5; 4 of 4 pass | - | forecast_run_summary.json, "checks", "realism_checks" |
+
+The fitted tau sits at its 5-day lower bound in every case and in the field: the liquid response is faster than one quarter, so tau cannot be resolved from quarterly data, and with constant injection the forecast does not depend on it [source: summary_forecast.md, section 6b]. Figures: `forecast_output/figs/backtest.png`, `alternative_start.png`, `forecast_fan.png`.
 
 ---
 
 **6. Key Findings and Results**
 
-**Headline metrics**
+Headline results at a glance. Each row is the number to quote; the method, the full findings and the supporting results are in section 5.
 
-| Metric | Value | Baseline / comparison | Source |
-|---|---|---|---|
-| Proxy test error, oil (% of final observed cumulative) | 0.064 % | Elton's original: 0.071 % | proxy_output/proxy_summary.json |
-| Proxy test error, water | 0.142 % | Elton's original: 0.240 % (−41 %) | proxy_output/proxy_summary.json |
-| Proxy out-of-fold error reduction (85 cases) | −21 % oil, −20 % water; p = 1e-9 / 6e-9 | Elton's original | improve_proxy/results/significance_summary.csv |
-| Proxy ranking agreement with simulator (Spearman) | 1.000 (validation, test) | - | proxy_output/proxy_summary.json |
-| Rate proxy, test RMSE (Elton's step-1 model, for comparison only; not used in the history match) | Oil 41.2 STB/d, water 35.7 STB/d, gas 13.9 MSCF/d | Ridge regression: 190.8 / 119.5 / 68.4. Mean curve: 1,015.9 / 762.1 / 369.0 | proxy_output/metrics_rate.csv (test rows); units from data_desc_engineered.md |
-| Proxy speed | 0.5 ms per call (20 networks) | Simulator run time not known, so no speed-up multiple is claimed | summary_hist_mat.md, section 1 |
-| Full pipeline run time (notebooks 1-4) | About 30-40 min | - | Team estimate, 2026-10-18 (not recorded in the repo). The repo gives about 15 min for the first run of notebook 1 and about 2 min for notebook 4 [README.md; forecast_output/README.md] |
-| History-match score of the 10 chosen (lower is better) | 0.491-0.544 % | Median of 100 cases: 6.58 % | hm_run_summary_real.json |
-| MCMC convergence (max R-hat; <1.1 = converged) | 1.024 | - | hm_run_summary_real.json |
-| Recovery test: true parameters inside 5-95 % interval | 40 of 40 | - | hm_details_real.xlsx, sheet recovery_test |
-| Automated checks passed | 13 of 13 | - | hm_run_summary_real.json |
-| Forecast method backtest error | 2.94 % (crm_wor) | Arps + WOR 4.47 %; liquid + WOR 5.44 %; Elton's 64.2 % | forecast_run_summary.json |
-| Start-point hindcast error (pseudo-fields / real field) | 3.52 % / 3.80 % (A2) | Own start: 7.47 % / 6.54 %; p = 5e-37 | summary_forecast.md, section 5 |
-| **Oil 2028, mean of the 10 cases (headline)** | **58.79 MMSTB** | 38.38 MMSTB in 2008 | forecast_run_summary.json |
-| Oil 2028, 10 cases (P10 / P50 / P90) | 58.58 / 58.73 / 59.00 MMSTB | - | summary_forecast.md, section 4 |
-| Oil 2028, wider range | 54.16-61.71 MMSTB | - | forecast_run_summary.json |
-| Water 2028, 10 cases (P10 / P50 / P90); wider range | 85.04 / 85.27 / 85.53; 81.83-90.01 MMSTB | 12.81 MMSTB in 2008 | summary_forecast.md, section 4 |
-| Oil rate and water cut, 2028 | ≈1,570-1,630 STB/d; 0.872-0.876 | 2008: 5,247 STB/d | forecast_output/forecast_by_case.csv |
-
-**Key findings**
-1. **The proxy is accurate enough to replace the simulator for matching.** Its test errors (0.06 % oil, 0.14 % water) are far below the best-case misfit (≈0.49 %), and it orders cases exactly as the simulator does (Spearman 1.000) [source: proxy_summary.json; summary_hist_mat.md].
-2. **The history fixes porosity but leaves other parameters open.** Porosity multiplier 1.366 (5-95 %: 1.342-1.383), posterior spread 6 % of prior; permeability and aquifer partly constrained; fault transmissibility not constrained (spread 99 % of prior) [source: hm_details_real.xlsx, sheet posterior].
-3. **The 10 chosen are statistically tied.** 6 simulated cases (6, 97, 76, 11, 40, 73) + 4 new parameter sets; scores span 0.053 %, less than the proxy error eps = 0.111 % [source: hm_run_summary_real.json; summary_hist_mat.md, section 3].
-4. **The simulator family cannot reproduce the field's late water rise.** In the last quarter of the history (to 2008-01-01) the 10 cases produce oil 11-15 % too fast (5,844-6,051 vs 5,247 STB/d) and water about 10 % too slowly (6,943-7,043 vs 7,782 STB/d). The field's WOR slope (0.130/MMSTB) is ≈1.7× the cases' (0.074-0.078) [source: recomputed from hist_match_output/top10_series_real.csv and history_observed.csv; matches summary_forecast.md, section 5; forecast_by_case.csv].
-   - Interpretation: whatever controls water breakthrough (e.g. relative permeability) is probably not among the 4 uncertain parameters, as the team's own write-up suggests.
-5. **Starting the forecast from the observed 2008 state halves the error.** Blind hindcast: 3.52 % vs 7.47 % on 100 pseudo-fields (better in 83 % of pairs, p = 5e-37) and 3.80 % vs 6.54 % on the real field. It lowers the mean 2028 oil of the 10 from 61.22 to 58.79 MMSTB [source: summary_forecast.md, section 5; forecast_run_summary.json].
-
-**Comparisons**
-
-| Way of choosing 10 (same proxy) | Mean score | Worst score | Outside train range | Source |
-|---|---|---|---|---|
-| Quality first (adopted) | 0.513 % | 0.544 % | 0 | hm_details_real.xlsx, selection_comparison |
-| Hybrid k-means (v3) | 0.512 % | 0.537 % | 0 | same |
-| Simulated cases only | 0.626 % | 0.925 % (4 ruled out) | 0 | same |
-| Elton's 10 | 0.531 % | 0.572 % | 9 | same |
-| Zi Yang's 10 | 0.513 % | 0.520 % | 0 | same |
-
-**Surprising or negative results**
-- The best-looking proxy variant on validation (MLP + Gaussian process average, validation J 0.063 %) failed the single test: test oil error 0.30 % vs 0.07 % for the baseline. It was rejected; 15 validation cases were too few to reveal the problem [source: summary_hist_mat.md, section 7].
-- Elton's original forecast fails the backtest (≈64 % error: oil ≈60 % too high, water ≈65 % too low) [source: forecast_run_summary.json].
-- Averaging the two best forecast methods was worse (3.48 %) than CRM alone (2.94 %) [source: summary_forecast.md, section 3].
-- The 10 cases agree within ≈1 % on 2028 oil, which understates the real uncertainty; in the hindcast, the blind matches' range never contained the field's water (0 of 3 cut-offs) [source: summary_forecast.md, section 4].
-- The improved proxy changed the history-match outcome only slightly (eps 0.149 % → 0.111 %; porosity and best case unchanged) [source: summary_hist_mat.md, section 7].
+| Stage | Headline result | Details |
+|---|---|---|
+| Proxy | Test error **0.064 % oil, 0.142 % water** (% of the observed 2008 cumulative); ranks cases exactly like the simulator (Spearman 1.000); 0.5 ms per call | 5.i |
+| History matching | The 10 chosen score **0.491-0.544 %** (median of the 100 cases: 6.58 %), statistically tied; **13 of 13** checks pass; recovery test 40 of 40 | 5.ii |
+| What the history pins down | Porosity multiplier **1.366** (5-95 %: 1.341-1.383); fault transmissibility not constrained | 5.ii |
+| Model-structure gap | In 2008 the 10 produce oil 11-15 % too fast and water about 10 % too slowly; field WOR slope ≈1.7× the cases' | 5.ii finding 4; 5.iii finding 5 |
+| Forecast method | CRM + WOR backtest error **2.94 %** (next best 4.47 %); starting from the observed 2008 state halves the hindcast error (3.52 % vs 7.47 %, p = 5e-37) | 5.iii |
+| **Oil 2028 (headline)** | **58.79 MMSTB, mean of the 10** (38.38 in 2008); wider range **54.16-61.71** | 5.iii |
+| Water 2028 | P50 85.27 MMSTB (12.81 in 2008); wider range 81.83-90.01 | 5.iii |
 
 ---
 
@@ -195,7 +309,7 @@ Main objective (organiser): build a proxy, find the parameters that minimise the
 
 ---
 
-**8. Conclusions and Next Steps**
+**8. Conclusions**
 
 | Objective | Achieved? | Evidence |
 |---|---|---|
@@ -206,14 +320,36 @@ Main objective (organiser): build a proxy, find the parameters that minimise the
 | 5. Forecast with honest uncertainty | Yes | 58.8 MMSTB (mean), range 54.2-61.7; all physical checks pass [forecast_run_summary.json] |
 
 - **Practical implications.** Interpretation: decision-makers should plan on the 54.2-61.7 MMSTB range, not the 1 % spread of the 10 cases; the low end (field-only trend) reflects the faster water rise the simulator misses.
-- **Next steps (from the repo).** Power BI dashboard, documents and video are due 20 Oct [source: summary_hist_mat.md, section 6]. Considered but not done [source: summary_forecast.md, section 6b]:
-  - a structured model-error term: it would widen the posterior but not move the forecast;
-  - rates in the HM score: no parameter set fits both the 2008 totals and rates, so it would only trade one fit for the other.
-- **Further next steps.** Interpretation (not in the repo): add the parameters that control water breakthrough (e.g. relative permeability) to the uncertain set and rerun the simulator on the posterior new sets; add economics to turn the range into a value decision. Confirm before presenting.
 
 ---
 
-**9. Visual Assets Inventory**
+**9. Next Steps**
+
+Team proposal (interpretation, not in the repo); confirm before presenting. Step 9.1 is a quick verification, 9.2 is the main model improvement, and 9.3 turns the pipeline into a working forecast tool. Steps 9.1 and 9.2 need simulator access, which the challenge did not provide.
+
+**9.1 Run the simulator on the chosen parameter sets (verification).**
+- *What:* run the simulator for the 4 new parameter sets in the final 10 over 1998-2008, and run all 10 cases forward to 2028 with injection held at 9,327 STB/d.
+- *Why:* the 4 new sets' history curves come from the proxy, not the simulator (section 7). The reference paper ends its workflow the same way: the posterior is fed back into the full simulator to confirm the match [source: reference/robust-history-matching-bayesian-lstm.md, Fig. 2]. The forward runs also give a 20-year physics-based comparison for the CRM + WOR forecast, whose backtest covers at most 12 quarters.
+- *Caution:* the simulator's own continuation was the least accurate start on the real field in the hindcast (8-9 % error, section 5.iii), so the forward runs check the forecast method within the model family; they are not the truth.
+- *Success measure:* the simulated scores of the 4 new sets stay within `eps` (0.111 %) of their proxy scores; the gap between simulator and CRM oil in 2028 is reported per case.
+- *Effort:* 14 simulator runs; no change to the pipeline.
+
+**9.2 Add the parameters that control water breakthrough (closing the model gap).**
+- *What:* extend the uncertain set with rock-fluid parameters: relative-permeability endpoints and exponents, connate water and residual oil saturation, as the reference paper does with its 10 parameters. Generate a new design of simulator runs (the paper uses a Latin hypercube), retrain the proxy, and rerun the history match with the same 13 checks.
+- *Why:* this is the largest known weakness. No set of the current 4 parameters reproduces the 2008 rates (oil 11-15 % too high, water about 10 % too low), and the field's WOR slope (0.130/MMSTB) is ≈1.7× the cases' (section 5.ii, finding 4). This gap is why the honest oil range is 54.2-61.7 MMSTB rather than the 1 % spread of the 10 cases. Once the model can reproduce the rates, the rates can also enter the HM score; today that would only trade the fit on totals for the fit on rates (summary_forecast.md, section 6b).
+- *Success measure:* matched cases reproduce the field's WOR slope and the 2008 rates while keeping the cumulative score at or below today's 0.49-0.54 %; the wider forecast range narrows.
+- *Effort:* the largest of the three steps. More parameters need more training runs (the reference paper used 300 runs for 10 parameters). The workflow itself stays the same: proxy → MCMC → quality-first choice of 10 → CRM forecast.
+
+**9.3 Keep the forecast up to date and test operating scenarios.**
+- *What:* (a) each time a new quarter of production is recorded, rerun notebooks 1-4 (about 30-40 min end to end), compare the previous forecast with the actual value, and track the error over time. (b) Run injection scenarios (e.g. held, raised, lowered) through the CRM, which takes water injection as its direct input.
+- *Why:* the backtest and hindcast cover at most 12 quarters, the forecast 80 (section 7), so new field data is the only real test of long-range accuracy. The tracked error also shows which side of the range the field follows: the 10 cases (58.8 MMSTB) or the data-only field trend (54.2 MMSTB). The current forecast assumes constant injection and no new wells (FAQ 2); operating decisions need to know how production responds if these change.
+- *Caution:* with changing injection, the CRM time constant tau matters, and it cannot be resolved from quarterly data (it sits at its 5-day lower bound; section 5.iii). Scenario work would need monthly rates.
+- *Success measure:* each new quarter falls inside the wider range; for scenarios, 2028 oil and water per injection level. These scenario forecasts are the input an economic evaluation would need; economics stays outside this study's technical scope.
+- *Effort:* low. The pipeline already runs end to end, and the CRM already uses injection as an input.
+
+---
+
+**10. Visual Assets Inventory**
 
 | File | What it shows | Takeaway it supports |
 |---|---|---|
@@ -233,38 +369,39 @@ Main objective (organiser): build a proxy, find the parameters that minimise the
 | proxy_output/figs/fig1_pred_vs_truth.png | Rate proxy (Elton's reproduced step-1 model, not the adopted proxy) vs simulator, all 41 dates | Backup only: the network architecture predicts well |
 | proxy_output/figs/fig2_curves_test.png (and _validation) | Rate curves of the best, median and worst test (validation) cases, simulator vs rate proxy | Backup only; label it as the rate proxy |
 | proxy_output/figs/fig4_rmse_by_date.png, fig0_train_curves.png | Rate-proxy error by date; rate curves of the 70 train cases and their mean | Backup |
-| improve_proxy/results/figs/variants_validation.png | Oil and water validation error of 9 proxy variants (V0 baseline to V6), with the water target line | Evidence-based model choice; note the V6 average looks best here but failed the test (section 6) |
+| improve_proxy/results/figs/variants_validation.png | Oil and water validation error of 9 proxy variants (V0 baseline to V6), with the water target line | Evidence-based model choice; note the V6 average looks best here but failed the test (section 5.i, finding 4) |
 | Tables: summary_hist_mat.md (top-10 table), summary_forecast.md (per-case 2028 table, hindcast table) | - | Slide-ready tables |
 
 Notebook 1.1 (EDA) figures exist only inside the notebook, not as saved files [source: file listing].
 
-**Missing visuals to create:** pipeline flow diagram; problem/data overview (100 cases fanning around the history; could crop fit_top10_real.png); simple parameter explainer graphic; proxy before/after bar chart (v1 vs v2 error); hindcast bar chart (own start vs A2); version timeline (v1→v4); team/collaboration slide with space for meeting snapshots (section 12). Power BI screenshots are not used in the slides (team decision).
+**Missing visuals to create:** pipeline flow diagram; simulator flow diagram (inputs → simulator → outputs, with the 4 uncertain parameters highlighted and kr/Pc marked as fixed; layout in section 3; it also serves as the parameter explainer); problem/data overview (100 cases fanning around the history; could crop fit_top10_real.png); proxy before/after bar chart (v1 vs v2 error); hindcast bar chart (own start vs A2); version timeline (v1→v4); team/collaboration slide with space for meeting snapshots (section 13). Power BI screenshots are not used in the slides (team decision).
 
 ---
 
-**10. Suggested Slide Storyline**
+**11. Suggested Slide Storyline**
 
-| # | Conclusion-style title | Key point | Best visual / number |
-|---|---|---|---|
-| 1 | From 100 Reservoir Simulations to a 20-Year Production Forecast: Machine Learning-Assisted History Matching (title slide) | Title, team | Team What: Elton, Si Jie, Yi Siang, Zi Yang |
-| 2 | Investment decisions depend on simulators that are slow to calibrate | Problem and core question | Briefing slides 25-26 |
-| 3 | We had 100 simulator runs, 4 uncertain parameters and 10 years of history | Data and constraints | 100 cases fan vs history (crop of fit_top10_real.png) |
-| 4 | A four-step pipeline turns 100 runs into a 20-year forecast | Approach overview | Pipeline diagram (to create) |
-| 5 | A neural-network proxy imitates the simulator to within 0.06 % oil and 0.14 % water | Proxy accuracy | fig5_hm_units.png; table of errors |
-| 6 | We kept a proxy upgrade only after it proved a significant 20 % gain | 8 variants tested under a rule fixed in advance (section 5); 20-seed tuned MLP adopted; the GP average looked best on validation but failed the test | significance_summary.csv; variants_validation.png |
-| 7 | The production history pins down porosity but not the fault | Posterior | posterior_real.png; porosity 1.342-1.383 |
-| 8 | Ten cases match the history equally well, and all 13 checks pass | The 10 and validation; state openly that 4 are new parameter sets (proxy curves) and why that is defensible | fit_top10_real.png; 0.491-0.544 % vs median 6.58 %; recovery test 40 of 40 |
-| 9 | The simulator cannot reproduce the field's late water rise | Model-structure gap | 2008 rates: oil 11-15 % high, water about 10 % low; field WOR slope 1.7× the cases' |
-| 10 | A tank model plus water-oil trend forecasts best in backtests | Method choice | backtest.png; 2.94 % vs 4.47 % vs 64 % |
-| 11 | Starting from the observed 2008 state halves the forecast error | Hindcast | 3.52 % vs 7.47 %, p = 5e-37; alternative_start.png |
-| 12 | The field should reach about 58.8 MMSTB of oil by 2028, within 54.2-61.7 | Headline result (mean of the 10) | forecast_fan.png |
-| 13 | The real uncertainty is the model, not the parameters | Limitations | 1 % spread vs wider range |
-| 14 | Next: widen the uncertain parameters and link the forecast to value | Conclusions, next steps | Objectives table (section 8) |
-| 15 | Four members' work was compared and merged into one tested pipeline | Collaboration (a judging criterion) | Roles table (section 12); version table v1-v4 (README.md); space for meeting snapshots |
+14 slides for the 7-minute video. The "Part" column follows the structure of section 5 (i proxy, ii history matching, iii forecast), so each part can be handed to a presenter as a block. Timings are suggestions and add up to 7:00, weighted towards the three technical parts: setup 0:55; (i) proxy 1:15; (ii) history matching 1:50; (iii) forecast 1:50; opening and close 1:10.
+
+| # | Part | Conclusion-style title | Key point | Best visual / number | Time |
+|---|---|---|---|---|---|
+| 1 | Opening | From 100 Reservoir Simulations to a 20-Year Production Forecast: Machine Learning-Assisted History Matching (title slide) | Title, team | Team What: Elton, Si Jie, Yi Siang, Zi Yang | 0:10 |
+| 2 | Setup | Investment decisions depend on simulators that are slow to calibrate | Problem and core question in one line (section 1) | Briefing slides 25-26 | 0:15 |
+| 3 | Setup | We had 100 simulator runs, 4 uncertain parameters and 10 years of history | Data, constraints and how the simulator works; the 4 parameters are geologic, while kr and Pc are fixed (section 3) | Simulator flow diagram (section 3, to create); 100 cases fan vs history (crop of fit_top10_real.png) | 0:25 |
+| 4 | Setup | A three-part pipeline turns 100 runs into a 20-year forecast | Roadmap only: (i) proxy → (ii) history matching → (iii) forecast; details come in each part | Pipeline diagram with the three parts labelled (to create) | 0:15 |
+| 5 | i Proxy | A neural-network proxy imitates the simulator to within 0.06 % oil and 0.14 % water | Accuracy far below the best-case misfit (≈0.49 %); ranks cases exactly like the simulator (5.i) | fig5_hm_units.png; 5.i results table | 0:35 |
+| 6 | i Proxy | We kept a proxy upgrade only after it proved a significant 20 % gain | 8 variants tested under a rule fixed in advance; 20-seed tuned MLP adopted; the GP average looked best on validation but failed the test (5.i) | variants_validation.png; significance_summary.csv | 0:40 |
+| 7 | ii History matching | The production history pins down porosity but not the fault | Posterior (5.ii, finding 1) | posterior_real.png; porosity 1.341-1.383 | 0:35 |
+| 8 | ii History matching | Ten cases match the history equally well, and all 13 checks pass | The 10 and their validation; state openly that 4 are new parameter sets (proxy curves) and why that is defensible (5.ii, findings 3 and 5) | fit_top10_real.png; 0.491-0.544 % vs median 6.58 %; recovery test 40 of 40 | 0:40 |
+| 9 | ii History matching | The simulator cannot reproduce the field's late water rise | Model-structure gap: totals match, rates do not (5.ii, finding 4); point back to slide 3: water breakthrough is governed by kr, which is fixed | 2008 rates: oil 11-15 % high, water about 10 % low; field WOR slope 1.7× the cases' | 0:35 |
+| 10 | iii Forecast | A tank model plus water-oil trend forecasts best in backtests | Method choice on 100 cases and the field (5.iii, finding 1) | backtest.png; 2.94 % vs 4.47 % vs 64 % | 0:35 |
+| 11 | iii Forecast | Starting from the observed 2008 state halves the forecast error | Blind hindcast with a rule fixed before the run (5.iii, finding 3) | alternative_start.png; 3.52 % vs 7.47 %, p = 5e-37 | 0:35 |
+| 12 | iii Forecast | The field should reach about 58.8 MMSTB of oil by 2028; plan on 54.2-61.7, because the model, not the parameters, sets the uncertainty | Headline result (mean of the 10) and honest range; the 10 agree within 1 %, which understates the uncertainty; backtests cover at most 12 of the 80 quarters (5.iii, findings 4-5; section 7) | forecast_fan.png; 1 % spread vs wider range | 0:40 |
+| 13 | Close | Next: verify with the simulator, widen the uncertain parameters, keep the forecast live | Conclusions and the three next steps (sections 8-9) | Objectives table (section 8); steps 9.1-9.3 | 0:30 |
+| 14 | Close | Four members' work was compared and merged into one tested pipeline | Collaboration (a judging criterion) | Roles table (section 13); version table v1-v4 (README.md); space for meeting snapshots | 0:30 |
 
 ---
 
-**11. Open Questions for the Team**
+**12. Open Questions for the Team**
 
 Resolved on 2026-10-17:
 - All numbers and figures may be used in the video.
@@ -280,7 +417,7 @@ Resolved on 2026-10-17:
 Resolved on 2026-10-18:
 - The suggested title now names the domain ("Reservoir", "Production").
 - Who records, edits and uploads the video is left out of this file.
-- Rate-proxy units confirmed from the data: oil and water in STB/d, gas in MSCF/d. Errors are always reported by phase (section 6), never pooled across phases, because the units differ. The pooled figures in the repo (rate 32.5, cumulative 23,097) mix units and must not be quoted; `summary_hist_mat.md` and `proxy_output/README.md` were corrected to per-phase values. The rate proxy is a comparison model only.
+- Rate-proxy units confirmed from the data: oil and water in STB/d, gas in MSCF/d. Errors are always reported by phase (section 5), never pooled across phases, because the units differ. The pooled figures in the repo (rate 32.5, cumulative 23,097) mix units and must not be quoted; `summary_hist_mat.md` and `proxy_output/README.md` were corrected to per-phase values. The rate proxy is a comparison model only.
 - The full pipeline (notebooks 1-4) takes about 30-40 min (team estimate). The simulator run time is not known, so the slides make no "N times faster" claim.
 - The slides stay technical; no economics.
 
@@ -291,7 +428,7 @@ Still open: none.
 
 ---
 
-**12. Collaboration**
+**13. Collaboration**
 
 How the work was split [sources: our_work/README.md; README.md; git log]. Each member's original work is kept in `our_work/`; the final pipeline (notebooks 1-4) merges the best parts after head-to-head comparisons.
 
@@ -310,7 +447,7 @@ How the work was split [sources: our_work/README.md; README.md; git log]. Each m
 
 **How the team decided** (useful for the collaboration slide):
 - **Proxy:** two proxies were built independently, and the team chose Elton's; Si Jie's is kept as a reference [source: our_work/README.md]. Eight improvement variants were then tested under a success rule agreed in advance [source: summary_hist_mat.md, section 7].
-- **Choice of the 10:** Yi Siang's, Zi Yang's and Elton's sets of 10 were all scored with the same proxy (table in section 6) [source: hm_details_real.xlsx, sheet selection_comparison].
+- **Choice of the 10:** Yi Siang's, Zi Yang's and Elton's sets of 10 were all scored with the same proxy (table in section 5.ii) [source: hm_details_real.xlsx, sheet selection_comparison].
 - **Forecast:** Elton's forecast was used as the baseline and replaced after it failed the backtest [source: summary_forecast.md, section 3].
 - **Versioning:** every change was kept only if it helped significantly, with a restore point for each version (v1-v4) [source: README.md].
 
