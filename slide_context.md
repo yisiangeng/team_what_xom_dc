@@ -325,27 +325,27 @@ Headline results at a glance. Each row is the number to quote; the method, the f
 
 **9. Next Steps**
 
-Team proposal (interpretation, not in the repo); confirm before presenting. Step 9.1 is a quick verification, 9.2 is the main model improvement, and 9.3 turns the pipeline into a working forecast tool. Steps 9.1 and 9.2 need simulator access, which the challenge did not provide.
+Team proposal for the field's engineers (interpretation, not in the repo); confirm before presenting. Each step comes from a result in this file. The forecast holds operations constant (FAQ 2), so it is the do-nothing baseline each step is measured against; it does not give the size of each step's gain.
 
-**9.1 Run the simulator on the chosen parameter sets (verification).**
-- *What:* run the simulator for the 4 new parameter sets in the final 10 over 1998-2008, and run all 10 cases forward to 2028 with injection held at 9,327 STB/d.
-- *Why:* the 4 new sets' history curves come from the proxy, not the simulator (section 7). The reference paper ends its workflow the same way: the posterior is fed back into the full simulator to confirm the match [source: reference/robust-history-matching-bayesian-lstm.md, Fig. 2]. The forward runs also give a 20-year physics-based comparison for the CRM + WOR forecast, whose backtest covers at most 12 quarters.
-- *Caution:* the simulator's own continuation was the least accurate start on the real field in the hindcast (8-9 % error, section 5.iii), so the forward runs check the forecast method within the model family; they are not the truth.
-- *Success measure:* the simulated scores of the 4 new sets stay within `eps` (0.111 %) of their proxy scores; the gap between simulator and CRM oil in 2028 is reported per case.
-- *Effort:* 14 simulator runs; no change to the pipeline.
+**9.1 Restore and hold water injection (2008-2009).**
+- *What the data shows:* liquid production follows injection within one quarter. Liquid/injection was 1.32-1.40 in every quarter of 2005-2008, and the fitted CRM gain G is 1.365 [source: summary_forecast.md, section 6b; forecast_output/forecast_by_case.csv]. Injection fell 21 % (from a 2000-2003 average of 11,858 to 9,327 STB/d in 2008), and production fell with it [source: data_after_engineering/history_observed.csv].
+- *Action:* check reservoir pressure. If it is falling, raise injection in steps of 1,000 STB/d and measure the response after each step.
+- *Why now:* each extra 1,000 STB/d injected gives about 550 STB/d of oil at the 2008 water cut, about 270 by 2018 and about 170 by 2028 [computed: G × oil share of liquid; 2008 from history_observed.csv, later years from the forecast water cut in forecast_cases_long.csv].
+- *Limit:* the gas-oil ratio has stayed at 0.3633 MSCF/STB. If it starts rising, pressure has dropped too far and injection in that area must go up.
 
-**9.2 Add the parameters that control water breakthrough (closing the model gap).**
-- *What:* extend the uncertain set with rock-fluid parameters: relative-permeability endpoints and exponents, connate water and residual oil saturation, as the reference paper does with its 10 parameters. Generate a new design of simulator runs (the paper uses a Latin hypercube), retrain the proxy, and rerun the history match with the same 13 checks.
-- *Why:* this is the largest known weakness. No set of the current 4 parameters reproduces the 2008 rates (oil 11-15 % too high, water about 10 % too low), and the field's WOR slope (0.130/MMSTB) is ≈1.7× the cases' (section 5.ii, finding 4). This gap is why the honest oil range is 54.2-61.7 MMSTB rather than the 1 % spread of the 10 cases. Once the model can reproduce the rates, the rates can also enter the HM score; today that would only trade the fit on totals for the fit on rates (summary_forecast.md, section 6b).
-- *Success measure:* matched cases reproduce the field's WOR slope and the 2008 rates while keeping the cumulative score at or below today's 0.49-0.54 %; the wider forecast range narrows.
-- *Effort:* the largest of the three steps. More parameters need more training runs (the reference paper used 300 runs for 10 parameters). The workflow itself stays the same: proxy → MCMC → quality-first choice of 10 → CRM forecast.
+**9.2 Find and block the water that bypasses oil (2008-2011).**
+- *What the data shows:* the field's WOR slope (0.130/MMSTB) is ≈1.7× the cases' (0.074-0.078), so injected water is reaching producers through high-permeability layers (section 5.ii, finding 4; section 5.iii, finding 5).
+- *Action:* run injection profile logs and inter-well tracers to locate those layers, then block them with gel treatments in injectors or water shut-off in producers.
+- *Why it matters:* this gap is the difference between the headline forecast (58.8 MMSTB by 2028) and the data-only field trend (54.2 MMSTB).
 
-**9.3 Keep the forecast up to date and test operating scenarios.**
-- *What:* (a) each time a new quarter of production is recorded, rerun notebooks 1-4 (about 30-40 min end to end), compare the previous forecast with the actual value, and track the error over time. (b) Run injection scenarios (e.g. held, raised, lowered) through the CRM, which takes water injection as its direct input.
-- *Why:* the backtest and hindcast cover at most 12 quarters, the forecast 80 (section 7), so new field data is the only real test of long-range accuracy. The tracked error also shows which side of the range the field follows: the 10 cases (58.8 MMSTB) or the data-only field trend (54.2 MMSTB). The current forecast assumes constant injection and no new wells (FAQ 2); operating decisions need to know how production responds if these change.
-- *Caution:* with changing injection, the CRM time constant tau matters, and it cannot be resolved from quarterly data (it sits at its 5-day lower bound; section 5.iii). Scenario work would need monthly rates.
-- *Success measure:* each new quarter falls inside the wider range; for scenarios, 2028 oil and water per injection level. These scenario forecasts are the input an economic evaluation would need; economics stays outside this study's technical scope.
-- *Effort:* low. The pipeline already runs end to end, and the CRM already uses injection as an input.
+**9.3 Drill for bypassed oil early (2010-2014).**
+- *What the data shows:* the porosity multiplier is 1.366, so the rock holds about a third more pore volume than the base geology assumed. The fast water rise means part of it is being swept poorly (section 5.ii, findings 1 and 4).
+- *Action:* drill infill wells and sidetracks where the updated model and saturation logs show remaining oil.
+- *Why early:* nearly two-thirds (64 %) of the oil forecast for 2008-2028 is produced by 2018 [computed from forecast_output/forecast_bands.csv, 10 cases P50: 51.48 MMSTB in 2018, 58.73 in 2028].
+
+**9.4 Track actual production against the forecast (ongoing).**
+- *Checkpoint:* by 2013 the water cut should be about 0.73 on the 10-case path, or 0.78 on the field-trend path [computed from forecast_cases_long.csv and forecast_bands.csv]. If the field follows the field-trend path, bring 9.2 and 9.3 forward.
+- *Yearly:* rerun notebooks 1-4 (about 30-40 min) with the new data.
 
 ---
 
@@ -396,8 +396,8 @@ Notebook 1.1 (EDA) figures exist only inside the notebook, not as saved files [s
 | 10 | iii Forecast | A tank model plus water-oil trend forecasts best in backtests | Method choice on 100 cases and the field (5.iii, finding 1) | backtest.png; 2.94 % vs 4.47 % vs 64 % | 0:35 |
 | 11 | iii Forecast | Starting from the observed 2008 state halves the forecast error | Blind hindcast with a rule fixed before the run (5.iii, finding 3) | alternative_start.png; 3.52 % vs 7.47 %, p = 5e-37 | 0:35 |
 | 12 | iii Forecast | The field should reach about 58.8 MMSTB of oil by 2028; plan on 54.2-61.7, because the model, not the parameters, sets the uncertainty | Headline result (mean of the 10) and honest range; the 10 agree within 1 %, which understates the uncertainty; backtests cover at most 12 of the 80 quarters (5.iii, findings 4-5; section 7) | forecast_fan.png; 1 % spread vs wider range | 0:40 |
-| 13 | Close | Next: verify with the simulator, widen the uncertain parameters, keep the forecast live | Conclusions and the three next steps (sections 8-9) | Objectives table (section 8); steps 9.1-9.3 | 0:30 |
-| 14 | Close | Four members' work was compared and merged into one tested pipeline | Collaboration (a judging criterion) | Roles table (section 13); version table v1-v4 (README.md); space for meeting snapshots | 0:30 |
+| 13 | Close | Next: restore injection, block the water channels, drill for bypassed oil, track the forecast | Conclusions and the four next steps (sections 8-9) | Objectives table (section 8); steps 9.1-9.4 | 0:30 |
+| 14 | Close | Four members' work was compared and merged into one tested pipeline | Collaboration (a judging criterion) | Roles A-D (section 13); version table v1-v4 (README.md); space for meeting snapshots | 0:30 |
 
 ---
 
@@ -430,20 +430,17 @@ Still open: none.
 
 **13. Collaboration**
 
-How the work was split [sources: our_work/README.md; README.md; git log]. Each member's original work is kept in `our_work/`; the final pipeline (notebooks 1-4) merges the best parts after head-to-head comparisons.
+Each member's original work is kept in `our_work/`; the final pipeline (notebooks 1-4) merges the best parts after head-to-head comparisons [sources: our_work/README.md; README.md; git log].
 
-| Role | Member | Jobs | Evidence in the repo |
-|---|---|---|---|
-| Data Engineer | Yi Siang | Converted the 9 organiser Excel files (up to 330 MB each) into clean CSV/NumPy files; wrote the data guide for the team | `notebook1_data_eng.ipynb`, `data_after_engineering/`, `data_desc_engineered.md` [git log: 2026-10-08, 2026-10-10] |
-| Data Analyst (EDA) | Zi Yang | Exploratory data analysis: data checks, parameter coverage, curves against the history, parameter effects, PCA, which parameters the history can identify | `notebook1.1_eda_commented.ipynb` [git log: ziyanglim29, 2026-10-09, "Document EDA insights in EDA_commented.ipynb"] |
-| Data Scientist: proxy model | Elton | Built the proxy the team chose (PyTorch MLP, 4 parameters + 8 grid features, 5-seed ensemble; the final version is a retuned 20-seed retraining of the same network), plus a first history match and forecast (challenge steps 1-4) | `our_work/proxy_model_elton/` |
-| Data Scientist: alternative proxy | Si Jie | Built a tested, packaged proxy repository from the raw data comparing several models; froze an LSTM (primary) and GRU (secondary). Kept as a reference after the team chose Elton's proxy | `our_work/proxy_model_sijie/` |
-| Data Scientist: history matching | Yi Siang | History-matching drafts v1/v2 (score, likelihood, MCMC, cross-checks), which became notebook 3 | `our_work/history_matching_v1_yisiang.ipynb`, `_v2_` |
-| Data Scientist: history matching | Zi Yang | Full alternative pipeline: GP-on-PCA proxy, differential evolution, MCMC, choice of 10. The GP was tested as a proxy variant, and the idea of using posterior sets as candidates was adopted | `our_work/history_matching_ziyang.ipynb`; `improve_proxy/` (variant V6) |
-| Integration and pipeline lead | Yi Siang | Merged the team's work into notebooks 2-4; ran the proxy-improvement and forecast-start studies; built the forecast; archived each version (v1-v4); aligned the pipeline with the organiser FAQ | `notebook2-4`, `improve_proxy/`, `improve_forecast/`, `archive/` [git log: 2026-10-15 to 2026-10-16] |
-| Dashboard Creator (Power BI) | Si Jie | Build the Power BI dashboard with `10_Final_deliverables.xlsx` as its source (required by the brief); extra tables for history, bands and the wider range are in `forecast_output/` (`forecast_cases_long.csv`, `forecast_bands.csv`). Use oil 58.8 MMSTB (mean) as the headline | Team decision, 2026-10-17 |
-| Slides and documentation | All four (Elton, Si Jie, Yi Siang, Zi Yang) | Build the PowerPoint from this file | Team decision, 2026-10-17 |
-| Presenters (video, 7 minutes) | All four (Elton, Si Jie, Yi Siang, Zi Yang) | Present in the video | Team decision, 2026-10-17 |
+**Role A: Si Jie, Business Analyst.** Leads the research direction, frames the problem, and turns the organiser's brief and FAQ into the team's working rules. Builds the Power BI dashboard to present the forecast and its uncertainty.
+
+**Role B: Yi Siang, Data Engineer.** Owns the data architecture, cleans the organiser's Excel files, and manages the hand-over files between notebooks. Supports proxy modelling and history matching with clean, checked inputs.
+
+**Role C: Elton, Data Scientist.** Trains the proxy model, tests improvements to it, and builds the 2028 forecast. Picks the forecast method by backtesting on past data.
+
+**Role D: Zi Yang, Reservoir Analyst.** Explores the data to find which parameters drive production. Leads the history match, selects the 10 best cases, and owns the checks that prove the results hold up.
+
+All four build the slides from this file and present in the video (team decision, 2026-10-17).
 
 **How the team decided** (useful for the collaboration slide):
 - **Proxy:** two proxies were built independently, and the team chose Elton's; Si Jie's is kept as a reference [source: our_work/README.md]. Eight improvement variants were then tested under a success rule agreed in advance [source: summary_hist_mat.md, section 7].
